@@ -89,14 +89,13 @@
         const input = document.getElementById('pw-field').value;
         const error = document.getElementById('error-msg');
         
-        // Hash-Check für Passwort: Abschied2026
         const msgUint8 = new TextEncoder().encode(input);
         const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-        // Dies ist der "Fingerabdruck" von Abschied2026
-        const correctHash = "7f742f1f008899896328373b9e4a3c1a8a25c34537651c6e18f276629910e53a";
+        // Dies ist der neue Fingerabdruck für: Iranazadi
+        const correctHash = "0407a2f578b173167a579624898144075191060960586e398939a95701d52d9a";
 
         if (hashHex === correctHash) {
             document.getElementById('login-area').style.display = 'none';
@@ -106,7 +105,6 @@
         }
     }
 
-    // Enter-Taste zum Einloggen ermöglichen
     document.getElementById("pw-field").addEventListener("keyup", function(event) {
         if (event.key === "Enter") {
             checkPW();
