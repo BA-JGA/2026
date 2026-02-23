@@ -149,6 +149,52 @@ ${headContent}
             return new TextDecoder().decode(decrypted);
         }
 
+        var SESSION_KEY = 'bam_pw';
+        var SESSION_TS = 'bam_ts';
+        var SESSION_TTL = 10 * 60 * 1000; // 10 minutes
+
+        function savePw(pw) {
+            try {
+                sessionStorage.setItem(SESSION_KEY, pw);
+                sessionStorage.setItem(SESSION_TS, Date.now().toString());
+            } catch(e) {}
+        }
+
+        function getSavedPw() {
+            try {
+                var pw = sessionStorage.getItem(SESSION_KEY);
+                var ts = parseInt(sessionStorage.getItem(SESSION_TS) || '0');
+                if (pw && (Date.now() - ts) < SESSION_TTL) return pw;
+                sessionStorage.removeItem(SESSION_KEY);
+                sessionStorage.removeItem(SESSION_TS);
+            } catch(e) {}
+            return null;
+        }
+
+        function injectContent(html) {
+            var ls = document.getElementById('lock-screen');
+            if (ls) ls.remove();
+            var container = document.getElementById('decrypted-content');
+            container.innerHTML = html;
+
+            Array.from(container.querySelectorAll('iframe')).forEach(function(oldIframe) {
+                var newIframe = document.createElement('iframe');
+                for (var i = 0; i < oldIframe.attributes.length; i++) {
+                    var attr = oldIframe.attributes[i];
+                    newIframe.setAttribute(attr.name, attr.value);
+                }
+                if (oldIframe.parentNode) oldIframe.parentNode.replaceChild(newIframe, oldIframe);
+            });
+
+            Array.from(container.querySelectorAll('script')).forEach(function(old) {
+                var s = document.createElement('script');
+                if (old.src) { s.src = old.src; }
+                else { s.textContent = old.textContent; }
+                if (old.parentNode) old.parentNode.replaceChild(s, old);
+                else container.appendChild(s);
+            });
+        }
+
         var pwInput = document.getElementById('password-input');
         var enterBtn = document.getElementById('enter-btn');
         var errorMsg = document.getElementById('error-msg');
@@ -162,36 +208,14 @@ ${headContent}
 
             try {
                 var html = await decrypt(pw);
+                savePw(pw);
 
                 var ls = document.getElementById('lock-screen');
                 ls.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
                 ls.style.opacity = '0';
                 ls.style.transform = 'scale(1.05)';
 
-                setTimeout(function() {
-                    ls.remove();
-                    var container = document.getElementById('decrypted-content');
-                    container.innerHTML = html;
-
-                    // Re-create iframes so browser loads them after innerHTML injection
-                    Array.from(container.querySelectorAll('iframe')).forEach(function(oldIframe) {
-                        var newIframe = document.createElement('iframe');
-                        for (var i = 0; i < oldIframe.attributes.length; i++) {
-                            var attr = oldIframe.attributes[i];
-                            newIframe.setAttribute(attr.name, attr.value);
-                        }
-                        if (oldIframe.parentNode) oldIframe.parentNode.replaceChild(newIframe, oldIframe);
-                    });
-
-                    // Execute scripts in decrypted content
-                    Array.from(container.querySelectorAll('script')).forEach(function(old) {
-                        var s = document.createElement('script');
-                        if (old.src) { s.src = old.src; }
-                        else { s.textContent = old.textContent; }
-                        if (old.parentNode) old.parentNode.replaceChild(s, old);
-                        else container.appendChild(s);
-                    });
-                }, 800);
+                setTimeout(function() { injectContent(html); }, 800);
             } catch(e) {
                 pwInput.classList.add('shake');
                 errorMsg.style.opacity = '1';
@@ -206,6 +230,17 @@ ${headContent}
                 enterBtn.disabled = false;
                 enterBtn.textContent = 'EINTRETEN';
             }
+        }
+
+        // Auto-unlock if password cached (< 10 min)
+        var cached = getSavedPw();
+        if (cached) {
+            decrypt(cached).then(function(html) {
+                injectContent(html);
+            }).catch(function() {
+                sessionStorage.removeItem(SESSION_KEY);
+                sessionStorage.removeItem(SESSION_TS);
+            });
         }
 
         enterBtn.addEventListener('click', tryUnlock);
