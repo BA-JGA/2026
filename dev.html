@@ -956,6 +956,7 @@
                         mainContent.style.animation = 'fadeIn 1s ease-out';
                         sparklesEnabled = true;
                         initMainPage();
+                        try { var a = new Audio('assets/intro.mp3'); a.volume = 0.5; a.play(); } catch(e) {}
                     }, 800);
                 } else {
                     passwordInput.classList.add('shake');

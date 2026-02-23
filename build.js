@@ -189,11 +189,16 @@ ${headContent}
             return null;
         }
 
-        function injectContent(html) {
+        function playIntro() {
+            try { var a = new Audio('assets/intro.mp3'); a.volume = 0.5; a.play(); } catch(e) {}
+        }
+
+        function injectContent(html, withAudio) {
             var ls = document.getElementById('lock-screen');
             if (ls) ls.remove();
             var container = document.getElementById('decrypted-content');
             container.innerHTML = html;
+            if (withAudio) playIntro();
 
             Array.from(container.querySelectorAll('iframe')).forEach(function(oldIframe) {
                 var newIframe = document.createElement('iframe');
@@ -233,7 +238,7 @@ ${headContent}
                 ls.style.opacity = '0';
                 ls.style.transform = 'scale(1.05)';
 
-                setTimeout(function() { injectContent(html); }, 800);
+                setTimeout(function() { injectContent(html, true); }, 800);
             } catch(e) {
                 pwInput.classList.add('shake');
                 errorMsg.style.opacity = '1';
