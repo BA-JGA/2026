@@ -190,7 +190,14 @@ ${headContent}
         }
 
         function playIntro() {
-            try { var a = new Audio('assets/intro.mp3'); a.volume = 0.5; a.play(); } catch(e) {}
+            try {
+                var a = new Audio('assets/intro.mp3'); a.volume = 0.5; a.play();
+                setTimeout(function() { a.pause(); }, 3000);
+                var resumed = false;
+                window.addEventListener('scroll', function() {
+                    if (!resumed && a.paused) { resumed = true; a.play(); }
+                }, { once: true });
+            } catch(e) {}
         }
 
         function injectContent(html, withAudio) {
