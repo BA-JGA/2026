@@ -113,6 +113,14 @@ ${headContent}
             }
         })();
 
+        window.bamLogout = function() {
+            try {
+                sessionStorage.removeItem(SESSION_KEY);
+                sessionStorage.removeItem(SESSION_TS);
+            } catch(e) {}
+            location.reload();
+        };
+
         function b64ToBytes(b64) {
             var bin = atob(b64);
             var bytes = new Uint8Array(bin.length);
