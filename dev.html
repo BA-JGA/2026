@@ -548,6 +548,202 @@
             height: 40%;
             pointer-events: none;
         }
+
+        /* ===== MARQUEE TICKER ===== */
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: marquee-scroll 40s linear infinite;
+        }
+        .marquee-track:hover { animation-play-state: paused; }
+        @keyframes marquee-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee-item {
+            white-space: nowrap;
+            padding: 0 2rem;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 0.9rem;
+            color: rgba(255,215,0,0.2);
+            letter-spacing: 0.1em;
+        }
+        .marquee-separator {
+            color: rgba(255,215,0,0.15);
+            padding: 0 0.5rem;
+        }
+
+        /* ===== ANIMATED GRADIENT ORBS ===== */
+        .gradient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 0;
+        }
+        @keyframes orb-drift-1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(50px, -30px) scale(1.1); }
+            66% { transform: translate(-30px, 40px) scale(0.95); }
+        }
+        @keyframes orb-drift-2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-40px, 50px) scale(1.15); }
+            66% { transform: translate(60px, -20px) scale(0.9); }
+        }
+
+        /* ===== MAGNETIC BUTTON ===== */
+        .btn-magnetic {
+            transition: transform 0.2s cubic-bezier(0.33, 1, 0.68, 1);
+        }
+
+        /* ===== WORD REVEAL ===== */
+        .word-reveal {
+            overflow: hidden;
+            display: inline-block;
+        }
+        .word-reveal-inner {
+            display: inline-block;
+            transform: translateY(110%);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .word-reveal.active .word-reveal-inner {
+            transform: translateY(0);
+        }
+
+        /* ===== STAGGER CHILDREN ===== */
+        .stagger-in > * {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .stagger-in.active > * { opacity: 1; transform: translateY(0); }
+        .stagger-in.active > *:nth-child(1) { transition-delay: 0s; }
+        .stagger-in.active > *:nth-child(2) { transition-delay: 0.08s; }
+        .stagger-in.active > *:nth-child(3) { transition-delay: 0.16s; }
+        .stagger-in.active > *:nth-child(4) { transition-delay: 0.24s; }
+        .stagger-in.active > *:nth-child(5) { transition-delay: 0.32s; }
+        .stagger-in.active > *:nth-child(6) { transition-delay: 0.40s; }
+
+        /* ===== GLITCH TEXT ===== */
+        .glitch-text {
+            position: relative;
+        }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+        }
+        .glitch-text:hover::before {
+            animation: glitch-1 0.3s ease;
+            opacity: 0.8;
+            color: #FFD700;
+            clip-path: inset(20% 0 40% 0);
+        }
+        .glitch-text:hover::after {
+            animation: glitch-2 0.3s ease;
+            opacity: 0.8;
+            color: #DAA520;
+            clip-path: inset(60% 0 10% 0);
+        }
+        @keyframes glitch-1 {
+            0% { transform: translate(0); }
+            20% { transform: translate(-3px, 3px); }
+            40% { transform: translate(3px, -3px); }
+            60% { transform: translate(-2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        @keyframes glitch-2 {
+            0% { transform: translate(0); }
+            20% { transform: translate(3px, -3px); }
+            40% { transform: translate(-3px, 3px); }
+            60% { transform: translate(2px, -2px); }
+            80% { transform: translate(-2px, 2px); }
+            100% { transform: translate(0); }
+        }
+
+        /* ===== IMAGE KEN BURNS ===== */
+        .ken-burns {
+            overflow: hidden;
+        }
+        .ken-burns img, .ken-burns > div {
+            transition: transform 8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .ken-burns:hover img, .ken-burns:hover > div {
+            transform: scale(1.08);
+        }
+
+        /* ===== TILT CARD 3D ===== */
+        .tilt-card {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        /* ===== CONFETTI ===== */
+        .confetti-piece {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            z-index: 9999;
+            pointer-events: none;
+            animation: confetti-fall 1.5s ease-out forwards;
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+            100% { transform: translateY(200px) rotate(720deg) scale(0); opacity: 0; }
+        }
+
+        /* ===== HERO ANIMATED BG ===== */
+        @keyframes hero-gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .hero-animated-bg {
+            background:
+                radial-gradient(ellipse at 20% 80%, rgba(255,215,0,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(218,165,32,0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, rgba(255,215,0,0.08) 0%, transparent 40%);
+            background-size: 200% 200%;
+            animation: hero-gradient-shift 15s ease-in-out infinite;
+        }
+
+        /* ===== PULSING RING ===== */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { opacity: 0.15; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+        .pulse-ring {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 50%;
+            animation: pulse-ring 4s ease-out infinite;
+        }
+
+        /* ===== COUNTER ===== */
+        .counter-number {
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ===== SMOOTH REVEAL LINE ===== */
+        .line-reveal {
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #FFD700, #DAA520);
+            transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .line-reveal.active { width: 100%; }
+
         img { pointer-events: none; -webkit-user-select: none; user-select: none; }
         body { -webkit-user-select: none; user-select: none; }
         input, textarea { -webkit-user-select: auto; user-select: auto; }
@@ -731,7 +927,17 @@
         </nav>
 
         <!-- ====== HERO SECTION ====== -->
-        <section id="hero" class="relative min-h-screen flex flex-col items-center justify-center hero-bg overflow-hidden px-6">
+        <section id="hero" class="relative min-h-screen flex flex-col items-center justify-center hero-bg hero-animated-bg overflow-hidden px-6">
+            <!-- Animated Gradient Orbs -->
+            <div class="gradient-orb" style="width:500px;height:500px;background:radial-gradient(circle,#FFD700,transparent);top:-10%;left:-10%;animation:orb-drift-1 12s ease-in-out infinite;"></div>
+            <div class="gradient-orb" style="width:400px;height:400px;background:radial-gradient(circle,#DAA520,transparent);bottom:-5%;right:-5%;animation:orb-drift-2 15s ease-in-out infinite;"></div>
+            <div class="gradient-orb" style="width:300px;height:300px;background:radial-gradient(circle,#FFF8DC,transparent);top:40%;left:60%;animation:orb-drift-1 18s ease-in-out infinite reverse;opacity:0.04;"></div>
+
+            <!-- Pulsing Rings behind hero text -->
+            <div class="pulse-ring" style="top:50%;left:50%;margin:-100px 0 0 -100px;"></div>
+            <div class="pulse-ring" style="top:50%;left:50%;margin:-100px 0 0 -100px;animation-delay:1.3s;"></div>
+            <div class="pulse-ring" style="top:50%;left:50%;margin:-100px 0 0 -100px;animation-delay:2.6s;"></div>
+
             <!-- Spotlight Beams -->
             <div class="spotlight" id="spotlight-l" style="left: 10%; top: -50px; transform: rotate(-8deg);"></div>
             <div class="spotlight" id="spotlight-r" style="right: 10%; top: -50px; transform: rotate(8deg);"></div>
@@ -749,23 +955,23 @@
             <!-- Stage Floor Reflection -->
             <div class="stage-reflection"></div>
 
-            <!-- Decorative floating music notes (parallax) -->
-            <div class="float-element top-20 left-10 text-gold-300 text-6xl" data-speed="0.3" style="animation-delay: 0s;">♪</div>
-            <div class="float-element top-40 right-16 text-gold-300 text-4xl" data-speed="0.5" style="animation-delay: 1s;">♫</div>
-            <div class="float-element bottom-32 left-20 text-gold-300 text-5xl" data-speed="0.2" style="animation-delay: 2s;">★</div>
-            <div class="float-element bottom-20 right-10 text-gold-300 text-3xl" data-speed="0.4" style="animation-delay: 3s;">♪</div>
-            <div class="float-element top-60 left-[30%] text-gold-300 text-3xl" data-speed="0.6" style="animation-delay: 1.5s;">♫</div>
-            <div class="float-element bottom-40 right-[25%] text-gold-300 text-4xl" data-speed="0.35" style="animation-delay: 2.5s;">★</div>
+            <!-- Decorative floating music notes (parallax + mouse parallax) -->
+            <div class="float-element hero-parallax-el top-20 left-10 text-gold-300 text-6xl" data-speed="0.3" data-mouse="20" style="animation-delay: 0s;">♪</div>
+            <div class="float-element hero-parallax-el top-40 right-16 text-gold-300 text-4xl" data-speed="0.5" data-mouse="30" style="animation-delay: 1s;">♫</div>
+            <div class="float-element hero-parallax-el bottom-32 left-20 text-gold-300 text-5xl" data-speed="0.2" data-mouse="15" style="animation-delay: 2s;">★</div>
+            <div class="float-element hero-parallax-el bottom-20 right-10 text-gold-300 text-3xl" data-speed="0.4" data-mouse="25" style="animation-delay: 3s;">♪</div>
+            <div class="float-element hero-parallax-el top-60 left-[30%] text-gold-300 text-3xl" data-speed="0.6" data-mouse="35" style="animation-delay: 1.5s;">♫</div>
+            <div class="float-element hero-parallax-el bottom-40 right-[25%] text-gold-300 text-4xl" data-speed="0.35" data-mouse="20" style="animation-delay: 2.5s;">★</div>
 
             <!-- Main hero content -->
-            <div class="text-center z-10 max-w-4xl">
+            <div class="text-center z-10 max-w-4xl" id="hero-content">
                 <!-- Small label -->
                 <p id="hero-label" class="text-gold-400 text-sm tracking-[0.3em] uppercase mb-6 font-medium" style="animation: fadeInUp 0.8s ease-out 0.2s both">
                     Der Untergang von
                 </p>
 
-                <!-- Big Name -->
-                <h1 id="hero-name" class="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black mb-2 text-gold-gradient text-gold-glow leading-none" style="animation: fadeInUp 0.8s ease-out 0.4s both">
+                <!-- Big Name with glitch hover -->
+                <h1 id="hero-name" class="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black mb-2 text-gold-gradient text-gold-glow leading-none glitch-text" data-text="BABAK" style="animation: fadeInUp 0.8s ease-out 0.4s both">
                     BABAK
                 </h1>
                 <p id="hero-surname" class="font-display text-xl sm:text-2xl md:text-3xl font-light text-gold-300/50 tracking-[0.2em] mb-6" style="animation: fadeInUp 0.8s ease-out 0.5s both">
@@ -804,25 +1010,67 @@
             </div>
         </section>
 
+        <!-- ====== MARQUEE TICKER ====== -->
+        <div class="overflow-hidden py-6 border-y border-gold-300/5 bg-black/50 relative z-10">
+            <div class="marquee-track">
+                <span class="marquee-item">♪ Billie Jean is not my lover ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Thriller Night ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Just Beat It ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Smooth Criminal ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Remember The Time ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Don't Stop 'Til You Get Enough ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ The Way You Make Me Feel ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Bad ♪</span>
+                <span class="marquee-separator">★</span>
+                <!-- Duplicate for seamless loop -->
+                <span class="marquee-item">♪ Billie Jean is not my lover ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Thriller Night ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Just Beat It ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Smooth Criminal ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Remember The Time ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Don't Stop 'Til You Get Enough ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ The Way You Make Me Feel ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Bad ♪</span>
+                <span class="marquee-separator">★</span>
+            </div>
+        </div>
+
         <!-- ====== STORY SECTION ====== -->
         <section id="story" class="relative py-24 sm:py-32 px-6">
+            <!-- Ambient orb -->
+            <div class="gradient-orb" style="width:400px;height:400px;background:radial-gradient(circle,#FFD700,transparent);top:10%;right:-10%;animation:orb-drift-2 20s ease-in-out infinite;"></div>
+
             <div class="max-w-5xl mx-auto">
                 <!-- Section Header -->
-                <div class="text-center mb-16 reveal">
+                <div class="text-center mb-16 reveal stagger-in">
                     <p class="text-gold-400 text-sm tracking-[0.3em] uppercase mb-3 font-medium">Kapitel 1</p>
-                    <h2 class="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-gold-gradient mb-4">
+                    <h2 class="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-gold-gradient mb-4 glitch-text" data-text="Remember The Time">
                         Remember The Time
                     </h2>
                     <p class="text-white/40 max-w-xl mx-auto text-base sm:text-lg">
                         Die Geschichte eines Mannes, der bald den wichtigsten Schritt seines Lebens geht.
                     </p>
-                    <div class="gold-divider mt-8"></div>
+                    <div class="line-reveal mt-8 mx-auto"></div>
                 </div>
 
                 <!-- Story Content Grid -->
                 <div class="grid md:grid-cols-2 gap-12 items-center mb-20">
                     <!-- Text Block -->
-                    <div class="reveal-left">
+                    <div class="reveal-left stagger-in">
                         <h3 class="font-display text-2xl sm:text-3xl font-semibold text-white mb-6">
                             Wer ist Babak?
                         </h3>
@@ -837,11 +1085,10 @@
                         </p>
                     </div>
 
-                    <!-- Image Placeholder -->
+                    <!-- Image Placeholder with Ken Burns -->
                     <div class="reveal-right">
-                        <div class="relative group">
-                            <div class="aspect-[4/3] rounded-2xl overflow-hidden border border-gold-300/10 bg-dark-50">
-                                <!-- Replace src with actual image -->
+                        <div class="relative group tilt-card">
+                            <div class="aspect-[4/3] rounded-2xl overflow-hidden border border-gold-300/10 bg-dark-50 ken-burns">
                                 <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gold-300/5 to-transparent">
                                     <div class="text-center">
                                         <p class="text-gold-300/30 text-6xl mb-4">📸</p>
@@ -860,8 +1107,8 @@
                 <div class="grid md:grid-cols-2 gap-12 items-center mb-20">
                     <!-- Image -->
                     <div class="reveal-left order-2 md:order-1">
-                        <div class="relative group">
-                            <div class="aspect-[4/3] rounded-2xl overflow-hidden border border-gold-300/10 bg-dark-50">
+                        <div class="relative group tilt-card">
+                            <div class="aspect-[4/3] rounded-2xl overflow-hidden border border-gold-300/10 bg-dark-50 ken-burns">
                                 <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gold-300/5 to-transparent">
                                     <div class="text-center">
                                         <p class="text-gold-300/30 text-6xl mb-4">🎤</p>
@@ -875,7 +1122,7 @@
                     </div>
 
                     <!-- Text -->
-                    <div class="reveal-right order-1 md:order-2">
+                    <div class="reveal-right order-1 md:order-2 stagger-in">
                         <h3 class="font-display text-2xl sm:text-3xl font-semibold text-white mb-6">
                             Die Highlights
                         </h3>
@@ -887,6 +1134,26 @@
                             Die besten Erinnerungen sind die, die man mit den richtigen
                             Menschen teilt. Und heute Abend wird eine neue dazukommen.
                         </p>
+                    </div>
+                </div>
+
+                <!-- Fun Stats Counter -->
+                <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
+                    <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02]">
+                        <p class="font-display text-3xl sm:text-4xl font-bold text-gold-gradient counter-number" data-target="12">0</p>
+                        <p class="text-white/30 text-sm mt-2">Beste Freunde</p>
+                    </div>
+                    <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02]">
+                        <p class="font-display text-3xl sm:text-4xl font-bold text-gold-gradient counter-number" data-target="1">0</p>
+                        <p class="text-white/30 text-sm mt-2">King of Pop</p>
+                    </div>
+                    <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02]">
+                        <p class="font-display text-3xl sm:text-4xl font-bold text-gold-gradient counter-number" data-target="2026">0</p>
+                        <p class="text-white/30 text-sm mt-2">Das Jahr</p>
+                    </div>
+                    <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02]">
+                        <p class="font-display text-3xl sm:text-4xl font-bold text-gold-gradient counter-number" data-target="100" data-suffix="%">0</p>
+                        <p class="text-white/30 text-sm mt-2">Unvergesslich</p>
                     </div>
                 </div>
 
@@ -909,27 +1176,31 @@
 
         <!-- ====== VIDEOS SECTION ====== -->
         <section id="videos" class="relative py-24 sm:py-32 px-6 section-glow">
+            <!-- Ambient orb -->
+            <div class="gradient-orb" style="width:350px;height:350px;background:radial-gradient(circle,#DAA520,transparent);bottom:5%;left:-8%;animation:orb-drift-1 16s ease-in-out infinite;"></div>
+
             <div class="max-w-5xl mx-auto">
                 <!-- Section Header -->
-                <div class="text-center mb-16 reveal">
+                <div class="text-center mb-16 reveal stagger-in">
                     <p class="text-gold-400 text-sm tracking-[0.3em] uppercase mb-3 font-medium">Kapitel 2</p>
-                    <h2 class="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-gold-gradient mb-4">
+                    <h2 class="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-gold-gradient mb-4 glitch-text" data-text="Thriller Night">
                         Thriller Night
                     </h2>
                     <p class="text-white/40 max-w-xl mx-auto text-base sm:text-lg">
                         Die besten Video-Momente. Press Play und genieß die Show.
                     </p>
-                    <div class="gold-divider mt-8"></div>
+                    <div class="line-reveal mt-8 mx-auto"></div>
                 </div>
 
                 <!-- Video Grid -->
                 <div class="grid gap-8 md:gap-10">
                     <!-- Video 1 -->
-                    <div class="video-card reveal">
+                    <div class="video-card reveal tilt-card">
                         <div class="p-4 sm:p-5 border-b border-gold-300/10">
                             <h3 class="font-display text-lg sm:text-xl font-semibold text-white flex items-center gap-3">
-                                <span class="text-gold-300">▶</span>
+                                <span class="text-gold-300 text-2xl">▶</span>
                                 MOV00605
+                                <span class="text-white/10 text-xs ml-auto font-body">Track 01</span>
                             </h3>
                         </div>
                         <iframe
@@ -942,11 +1213,12 @@
                     </div>
 
                     <!-- Video 2 -->
-                    <div class="video-card reveal">
+                    <div class="video-card reveal tilt-card">
                         <div class="p-4 sm:p-5 border-b border-gold-300/10">
                             <h3 class="font-display text-lg sm:text-xl font-semibold text-white flex items-center gap-3">
-                                <span class="text-gold-300">▶</span>
+                                <span class="text-gold-300 text-2xl">▶</span>
                                 Küs
+                                <span class="text-white/10 text-xs ml-auto font-body">Track 02</span>
                             </h3>
                         </div>
                         <iframe
@@ -970,15 +1242,15 @@
         <section id="kommentare" class="relative py-24 sm:py-32 px-6">
             <div class="max-w-3xl mx-auto">
                 <!-- Section Header -->
-                <div class="text-center mb-16 reveal">
+                <div class="text-center mb-16 reveal stagger-in">
                     <p class="text-gold-400 text-sm tracking-[0.3em] uppercase mb-3 font-medium">Kapitel 3</p>
-                    <h2 class="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-gold-gradient mb-4">
+                    <h2 class="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-gold-gradient mb-4 glitch-text" data-text="You Are Not Alone">
                         You Are Not Alone
                     </h2>
                     <p class="text-white/40 max-w-xl mx-auto text-base sm:text-lg">
                         Hinterlass Babak ein paar warme Worte. Er wird sie brauchen.
                     </p>
-                    <div class="gold-divider mt-8"></div>
+                    <div class="line-reveal mt-8 mx-auto"></div>
                 </div>
 
                 <!-- Comment Form -->
@@ -1035,10 +1307,52 @@
             </div>
         </section>
 
+        <!-- Second Marquee (reverse direction) -->
+        <div class="overflow-hidden py-4 border-y border-gold-300/5 bg-black/50 relative z-10">
+            <div class="marquee-track" style="animation-direction: reverse; animation-duration: 50s;">
+                <span class="marquee-item">♪ Man In The Mirror ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Black Or White ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Rock With You ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Wanna Be Startin' Somethin' ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Off The Wall ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ P.Y.T. ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Human Nature ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Heal The World ♪</span>
+                <span class="marquee-separator">★</span>
+                <!-- Duplicate -->
+                <span class="marquee-item">♪ Man In The Mirror ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Black Or White ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Rock With You ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Wanna Be Startin' Somethin' ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Off The Wall ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ P.Y.T. ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Human Nature ♪</span>
+                <span class="marquee-separator">★</span>
+                <span class="marquee-item">♪ Heal The World ♪</span>
+                <span class="marquee-separator">★</span>
+            </div>
+        </div>
+
         <!-- ====== FOOTER ====== -->
-        <footer class="relative py-16 px-6 border-t border-gold-300/10">
-            <div class="max-w-4xl mx-auto text-center">
-                <div class="gold-divider mb-8"></div>
+        <footer class="relative py-20 px-6 border-t border-gold-300/10 overflow-hidden">
+            <!-- Footer ambient orb -->
+            <div class="gradient-orb" style="width:300px;height:300px;background:radial-gradient(circle,#FFD700,transparent);bottom:-20%;left:50%;margin-left:-150px;animation:orb-drift-1 10s ease-in-out infinite;opacity:0.05;"></div>
+
+            <div class="max-w-4xl mx-auto text-center relative z-10">
+                <div class="line-reveal mx-auto mb-10"></div>
 
                 <!-- MJ Hat -->
                 <svg width="50" height="32" viewBox="0 0 80 50" class="mx-auto mb-6 opacity-30">
@@ -1048,9 +1362,20 @@
                     <rect x="28" y="22" width="24" height="6" rx="2" fill="#FFD700" opacity="0.6"/>
                 </svg>
 
-                <p class="font-display italic text-gold-300/40 text-lg mb-4">
+                <p class="font-display italic text-gold-300/40 text-2xl mb-2">
                     "This is it."
                 </p>
+                <p class="font-display italic text-gold-300/20 text-sm mb-8">
+                    — Michael Jackson
+                </p>
+
+                <div class="flex items-center justify-center gap-4 mb-6">
+                    <span class="text-gold-300/10">♪</span>
+                    <span class="text-gold-300/15">♫</span>
+                    <span class="text-gold-300/20">★</span>
+                    <span class="text-gold-300/15">♫</span>
+                    <span class="text-gold-300/10">♪</span>
+                </div>
 
                 <p class="text-white/20 text-sm mb-2">
                     Eine Smooth Criminal Production
@@ -1236,10 +1561,135 @@
             // Create main particles
             createParticles('main-particles', 25);
 
+            // ===== MOUSE PARALLAX ON HERO =====
+            var heroSection = document.getElementById('hero');
+            if (heroSection) {
+                var parallaxEls = heroSection.querySelectorAll('.hero-parallax-el');
+                var heroContent = document.getElementById('hero-content');
+                heroSection.addEventListener('mousemove', function(e) {
+                    var rect = heroSection.getBoundingClientRect();
+                    var x = (e.clientX - rect.left) / rect.width - 0.5;
+                    var y = (e.clientY - rect.top) / rect.height - 0.5;
+
+                    parallaxEls.forEach(function(el) {
+                        var strength = parseFloat(el.dataset.mouse) || 20;
+                        el.style.transform = 'translate(' + (x * strength) + 'px, ' + (y * strength) + 'px)';
+                    });
+
+                    // Subtle tilt on hero content
+                    if (heroContent) {
+                        heroContent.style.transform = 'perspective(1000px) rotateY(' + (x * 2) + 'deg) rotateX(' + (-y * 2) + 'deg)';
+                    }
+                });
+                heroSection.addEventListener('mouseleave', function() {
+                    parallaxEls.forEach(function(el) { el.style.transform = ''; });
+                    if (heroContent) heroContent.style.transform = '';
+                });
+            }
+
+            // ===== 3D TILT ON CARDS =====
+            document.querySelectorAll('.tilt-card').forEach(function(card) {
+                card.addEventListener('mousemove', function(e) {
+                    var rect = card.getBoundingClientRect();
+                    var x = (e.clientX - rect.left) / rect.width - 0.5;
+                    var y = (e.clientY - rect.top) / rect.height - 0.5;
+                    card.style.transform = 'perspective(800px) rotateY(' + (x * 8) + 'deg) rotateX(' + (-y * 8) + 'deg) scale(1.02)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    card.style.transform = '';
+                    card.style.transition = 'transform 0.5s ease';
+                    setTimeout(function() { card.style.transition = ''; }, 500);
+                });
+            });
+
+            // ===== COUNTER ANIMATION =====
+            function animateCounters() {
+                document.querySelectorAll('.counter-number').forEach(function(el) {
+                    if (el.dataset.counted) return;
+                    var target = parseInt(el.dataset.target);
+                    var suffix = el.dataset.suffix || '';
+                    var duration = Math.min(2000, target * 3);
+                    var start = 0;
+                    var startTime = null;
+
+                    function step(timestamp) {
+                        if (!startTime) startTime = timestamp;
+                        var progress = Math.min((timestamp - startTime) / duration, 1);
+                        // Ease out cubic
+                        var eased = 1 - Math.pow(1 - progress, 3);
+                        el.textContent = Math.floor(eased * target) + suffix;
+                        if (progress < 1) requestAnimationFrame(step);
+                        else el.textContent = target + suffix;
+                    }
+                    el.dataset.counted = '1';
+                    requestAnimationFrame(step);
+                });
+            }
+
+            // ===== LINE REVEALS =====
+            var lineReveals = document.querySelectorAll('.line-reveal');
+            var lineObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, { threshold: 0.5 });
+            lineReveals.forEach(function(el) { lineObserver.observe(el); });
+
+            // ===== COUNTER OBSERVER =====
+            var counterSection = document.querySelector('.counter-number');
+            if (counterSection) {
+                var counterObserver = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) animateCounters();
+                    });
+                }, { threshold: 0.3 });
+                counterObserver.observe(counterSection.parentElement.parentElement);
+            }
+
+            // ===== CONFETTI ON COMMENT SUBMIT =====
+            window._originalSubmitComment = window.submitComment;
+            var _origSubmit = window.submitComment;
+            window.submitComment = async function() {
+                var name = document.getElementById('comment-name').value.trim();
+                var msg = document.getElementById('comment-message').value.trim();
+                if (!name || !msg) { if (_origSubmit) await _origSubmit(); return; }
+                if (_origSubmit) await _origSubmit();
+                // Confetti burst
+                var btn = document.getElementById('submit-comment');
+                if (!btn) return;
+                var rect = btn.getBoundingClientRect();
+                var colors = ['#FFD700', '#DAA520', '#FFF8DC', '#fff', '#B8860B'];
+                for (var i = 0; i < 30; i++) {
+                    var c = document.createElement('div');
+                    c.className = 'confetti-piece';
+                    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    c.style.left = (rect.left + rect.width / 2 + (Math.random() - 0.5) * 100) + 'px';
+                    c.style.top = (rect.top - 10) + 'px';
+                    c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                    c.style.animationDuration = (1 + Math.random()) + 's';
+                    c.style.animationDelay = (Math.random() * 0.3) + 's';
+                    document.body.appendChild(c);
+                    setTimeout(function(el) { el.remove(); }.bind(null, c), 2000);
+                }
+            };
+
+            // ===== MAGNETIC BUTTONS =====
+            document.querySelectorAll('.btn-gold').forEach(function(btn) {
+                btn.classList.add('btn-magnetic');
+                btn.addEventListener('mousemove', function(e) {
+                    var rect = btn.getBoundingClientRect();
+                    var x = e.clientX - rect.left - rect.width / 2;
+                    var y = e.clientY - rect.top - rect.height / 2;
+                    btn.style.transform = 'translate(' + (x * 0.2) + 'px, ' + (y * 0.2) + 'px) translateY(-2px)';
+                });
+                btn.addEventListener('mouseleave', function() {
+                    btn.style.transform = '';
+                });
+            });
+
             // ===== GSAP ANIMATIONS =====
             function initGSAP() {
                 if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
-                    // GSAP not loaded yet, retry up to 5 seconds
                     if (!initGSAP._retries) initGSAP._retries = 0;
                     if (initGSAP._retries++ < 50) setTimeout(initGSAP, 100);
                     return;
@@ -1293,6 +1743,12 @@
                     scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
                 });
 
+                // -- Hero Content Parallax on Scroll --
+                gsap.to('#hero-content', {
+                    yPercent: 30, opacity: 0.3, ease: 'none',
+                    scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
+                });
+
                 // -- Section Headers: dramatic clip-path reveal --
                 gsap.utils.toArray('section h2').forEach(function(h2) {
                     gsap.from(h2, {
@@ -1334,6 +1790,16 @@
                     scrollTrigger: { trigger: '.reveal-scale', start: 'top 85%' }
                 });
 
+                // -- Counter Numbers: stagger reveal --
+                ScrollTrigger.batch('.counter-number', {
+                    onEnter: function(elements) {
+                        gsap.from(elements, {
+                            scale: 0, opacity: 0, stagger: 0.15, duration: 0.6, ease: 'back.out(2)'
+                        });
+                    },
+                    start: 'top 85%'
+                });
+
                 // -- Comment Bubbles: stagger on enter --
                 ScrollTrigger.batch('.comment-bubble', {
                     onEnter: function(elements) {
@@ -1347,7 +1813,7 @@
                 // -- MJ Dividers: music notes pulse --
                 gsap.utils.toArray('.mj-divider span').forEach(function(span) {
                     gsap.from(span, {
-                        scale: 0, opacity: 0, duration: 0.8, ease: 'back.out(2)',
+                        scale: 0, opacity: 0, rotation: 180, duration: 0.8, ease: 'back.out(2)',
                         scrollTrigger: { trigger: span, start: 'top 90%' }
                     });
                 });
@@ -1367,7 +1833,30 @@
                     });
                 });
 
+                // -- Gradient orbs: parallax drift --
+                gsap.utils.toArray('.gradient-orb').forEach(function(orb) {
+                    gsap.to(orb, {
+                        yPercent: -40,
+                        ease: 'none',
+                        scrollTrigger: { trigger: orb.parentElement, start: 'top bottom', end: 'bottom top', scrub: true }
+                    });
+                });
+
+                // -- Marquee speed change on scroll --
+                var marqueeTrack = document.querySelector('.marquee-track');
+                if (marqueeTrack) {
+                    gsap.to(marqueeTrack, {
+                        animationDuration: '15s',
+                        ease: 'none',
+                        scrollTrigger: { trigger: marqueeTrack, start: 'top bottom', end: 'bottom top', scrub: true,
+                            onUpdate: function(self) {
+                                marqueeTrack.style.animationDuration = (40 - self.progress * 25) + 's';
+                            }
+                        }
+                    });
+                }
             }
+
             // Always run IntersectionObserver as baseline for .reveal elements
             var revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
             var revealObserver = new IntersectionObserver(function(entries) {
@@ -1376,6 +1865,15 @@
                 });
             }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
             revealElements.forEach(function(el) { revealObserver.observe(el); });
+
+            // Stagger-in elements observer
+            var staggerElements = document.querySelectorAll('.stagger-in');
+            var staggerObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, { threshold: 0.1 });
+            staggerElements.forEach(function(el) { staggerObserver.observe(el); });
 
             // GSAP enhances on top of CSS baseline
             initGSAP();
