@@ -940,6 +940,7 @@
                         lockScreen.style.display = 'none';
                         mainContent.classList.remove('hidden');
                         mainContent.style.animation = 'fadeIn 1s ease-out';
+                        sparklesEnabled = true;
                         initMainPage();
                     }, 800);
                 } else {
@@ -991,18 +992,18 @@
 
         // ---- Cursor Sparkle Trail ----
         let sparkleThrottle = 0;
+        let sparklesEnabled = !lockScreen; // Enable immediately in encrypted mode
         document.addEventListener('mousemove', (e) => {
+            if (!sparklesEnabled) return;
             if (Date.now() - sparkleThrottle < 50) return;
             sparkleThrottle = Date.now();
 
-            if (lockScreen.style.display === 'none') {
-                const sparkle = document.createElement('div');
-                sparkle.className = 'cursor-sparkle';
-                sparkle.style.left = e.clientX + 'px';
-                sparkle.style.top = e.clientY + 'px';
-                document.body.appendChild(sparkle);
-                setTimeout(() => sparkle.remove(), 600);
-            }
+            const sparkle = document.createElement('div');
+            sparkle.className = 'cursor-sparkle';
+            sparkle.style.left = e.clientX + 'px';
+            sparkle.style.top = e.clientY + 'px';
+            document.body.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 600);
         });
 
         // ---- Initialize Main Page ----
