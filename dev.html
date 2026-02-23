@@ -905,61 +905,64 @@
             PASSWORD_HASH: null
         };
 
-        // ---- Password / Lock Screen ----
+        // ---- Password / Lock Screen (dev mode only) ----
         const passwordInput = document.getElementById('password-input');
         const enterBtn = document.getElementById('enter-btn');
         const errorMsg = document.getElementById('error-msg');
         const lockScreen = document.getElementById('lock-screen');
         const mainContent = document.getElementById('main-content');
 
-        async function hashPassword(pw) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(pw);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        // Pre-computed SHA-256 hash of "Iranazadi"
-        const CORRECT_HASH = '7c0da27eb748a30dbee03550e5b5cd651e2a4e25e34e2860eebd21e4e9a3be71';
-
-        async function tryUnlock() {
-            const pw = passwordInput.value;
-            const hash = await hashPassword(pw);
-
-            if (hash === CORRECT_HASH) {
-                // Success - unlock
-                lockScreen.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-                lockScreen.style.opacity = '0';
-                lockScreen.style.transform = 'scale(1.05)';
-
-                setTimeout(() => {
-                    lockScreen.style.display = 'none';
-                    mainContent.classList.remove('hidden');
-                    mainContent.style.animation = 'fadeIn 1s ease-out';
-                    initMainPage();
-                }, 800);
-            } else {
-                // Wrong password
-                passwordInput.classList.add('shake');
-                errorMsg.style.opacity = '1';
-                passwordInput.style.borderColor = 'rgba(239, 68, 68, 0.5)';
-
-                setTimeout(() => {
-                    passwordInput.classList.remove('shake');
-                    passwordInput.style.borderColor = 'rgba(255, 215, 0, 0.3)';
-                }, 600);
-
-                setTimeout(() => {
-                    errorMsg.style.opacity = '0';
-                }, 3000);
+        // In encrypted build, lock screen elements don't exist here.
+        // Detect and skip to initMainPage directly.
+        if (!enterBtn) {
+            initMainPage();
+        } else {
+            async function hashPassword(pw) {
+                const encoder = new TextEncoder();
+                const data = encoder.encode(pw);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
             }
-        }
 
-        enterBtn.addEventListener('click', tryUnlock);
-        passwordInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') tryUnlock();
-        });
+            const CORRECT_HASH = '7c0da27eb748a30dbee03550e5b5cd651e2a4e25e34e2860eebd21e4e9a3be71';
+
+            async function tryUnlock() {
+                const pw = passwordInput.value;
+                const hash = await hashPassword(pw);
+
+                if (hash === CORRECT_HASH) {
+                    lockScreen.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                    lockScreen.style.opacity = '0';
+                    lockScreen.style.transform = 'scale(1.05)';
+
+                    setTimeout(() => {
+                        lockScreen.style.display = 'none';
+                        mainContent.classList.remove('hidden');
+                        mainContent.style.animation = 'fadeIn 1s ease-out';
+                        initMainPage();
+                    }, 800);
+                } else {
+                    passwordInput.classList.add('shake');
+                    errorMsg.style.opacity = '1';
+                    passwordInput.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+
+                    setTimeout(() => {
+                        passwordInput.classList.remove('shake');
+                        passwordInput.style.borderColor = 'rgba(255, 215, 0, 0.3)';
+                    }, 600);
+
+                    setTimeout(() => {
+                        errorMsg.style.opacity = '0';
+                    }, 3000);
+                }
+            }
+
+            enterBtn.addEventListener('click', tryUnlock);
+            passwordInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') tryUnlock();
+            });
+        }
 
         // ---- Particle System ----
         function createParticles(containerId, count) {
@@ -1227,8 +1230,8 @@
             submitBtn.textContent = 'Absenden ✨';
         };
 
-        // ---- Focus password input on load ----
-        setTimeout(() => passwordInput.focus(), 500);
+        // ---- Focus password input on load (dev mode only) ----
+        if (passwordInput) setTimeout(() => passwordInput.focus(), 500);
 
     })();
     </script>
