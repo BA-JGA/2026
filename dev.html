@@ -760,38 +760,38 @@
             <!-- Main hero content -->
             <div class="text-center z-10 max-w-4xl">
                 <!-- Small label -->
-                <p id="hero-label" class="text-gold-400 text-sm tracking-[0.3em] uppercase mb-6 font-medium">
+                <p id="hero-label" class="text-gold-400 text-sm tracking-[0.3em] uppercase mb-6 font-medium" style="animation: fadeInUp 0.8s ease-out 0.2s both">
                     Der Untergang von
                 </p>
 
                 <!-- Big Name -->
-                <h1 id="hero-name" class="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black mb-2 text-gold-gradient text-gold-glow leading-none">
+                <h1 id="hero-name" class="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black mb-2 text-gold-gradient text-gold-glow leading-none" style="animation: fadeInUp 0.8s ease-out 0.4s both">
                     BABAK
                 </h1>
-                <p id="hero-surname" class="font-display text-xl sm:text-2xl md:text-3xl font-light text-gold-300/50 tracking-[0.2em] mb-6">
+                <p id="hero-surname" class="font-display text-xl sm:text-2xl md:text-3xl font-light text-gold-300/50 tracking-[0.2em] mb-6" style="animation: fadeInUp 0.8s ease-out 0.5s both">
                     AMINI MOGHADAM
                 </p>
 
                 <!-- Subtitle -->
-                <p id="hero-subtitle" class="text-white/60 text-lg sm:text-xl md:text-2xl font-light max-w-2xl mx-auto mb-4 leading-relaxed">
+                <p id="hero-subtitle" class="text-white/60 text-lg sm:text-xl md:text-2xl font-light max-w-2xl mx-auto mb-4 leading-relaxed" style="animation: fadeInUp 0.8s ease-out 0.6s both">
                     "Remember the Time" — Ein Abend, der in die Geschichte eingeht.
                 </p>
 
                 <!-- MJ Quote -->
-                <p id="hero-quote" class="font-display italic text-gold-400/60 text-base sm:text-lg mt-8">
+                <p id="hero-quote" class="font-display italic text-gold-400/60 text-base sm:text-lg mt-8" style="animation: fadeInUp 0.8s ease-out 0.8s both">
                     "Don't stop 'til you get enough"
                 </p>
 
                 <!-- Vinyl Record -->
-                <div id="hero-vinyl" class="flex justify-center mt-10">
+                <div id="hero-vinyl" class="flex justify-center mt-10" style="animation: fadeInUp 0.8s ease-out 1s both">
                     <div class="vinyl" id="vinyl-disc"></div>
                 </div>
 
                 <!-- Divider -->
-                <div id="hero-divider" class="gold-divider mt-8 mb-8"></div>
+                <div id="hero-divider" class="gold-divider mt-8 mb-8" style="animation: fadeIn 1s ease-out 1.2s both"></div>
 
                 <!-- Scroll indicator -->
-                <div id="scroll-hint" class="mt-8">
+                <div id="scroll-hint" class="mt-8" style="animation: fadeIn 1s ease-out 1.4s both">
                     <a href="#story" class="inline-flex flex-col items-center text-white/30 hover:text-gold-300 transition-colors duration-300">
                         <span class="text-xs tracking-widest uppercase mb-2">Scroll</span>
                         <svg width="20" height="30" viewBox="0 0 20 30" class="animate-bounce">
@@ -1239,16 +1239,12 @@
             // ===== GSAP ANIMATIONS =====
             function initGSAP() {
                 if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
-                    // GSAP not loaded yet (CDN still downloading), retry
-                    setTimeout(initGSAP, 100);
+                    // GSAP not loaded yet, retry up to 5 seconds
+                    if (!initGSAP._retries) initGSAP._retries = 0;
+                    if (initGSAP._retries++ < 50) setTimeout(initGSAP, 100);
                     return;
                 }
                 gsap.registerPlugin(ScrollTrigger);
-
-                // Set initial hidden states
-                gsap.set('#hero-label, #hero-name, #hero-surname, #hero-subtitle, #hero-quote, #hero-vinyl, #hero-divider, #scroll-hint', { opacity: 0 });
-                gsap.set('#hero-name', { scale: 0.5, rotationX: -45 });
-                gsap.set('#spotlight-l, #spotlight-r', { opacity: 0 });
 
                 // -- Scroll Progress Bar --
                 gsap.to('#scroll-progress', {
@@ -1257,19 +1253,9 @@
                     scrollTrigger: { trigger: 'body', start: 'top top', end: 'bottom bottom', scrub: 0.3 }
                 });
 
-                // -- Hero Entry Timeline --
-                var heroTL = gsap.timeline({ delay: 0.3 });
-                heroTL
-                    .to('#spotlight-l, #spotlight-r', { opacity: 0.8, duration: 1.5, ease: 'power2.out' })
-                    .to('#hero-label', { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, 0.2)
-                    .to('#hero-name', { opacity: 1, scale: 1, rotationX: 0, duration: 1.2, ease: 'back.out(1.4)' }, 0.4)
-                    .to('#hero-surname', { opacity: 1, duration: 0.8, ease: 'power2.out' }, 0.9)
-                    .to('#hero-subtitle', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 1.1)
-                    .to('#hero-quote', { opacity: 1, duration: 0.8, ease: 'power2.out' }, 1.4)
-                    .to('#hero-vinyl', { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.7)' }, 1.6)
-                    .to('#hero-divider', { opacity: 1, scaleX: 1, duration: 0.8, ease: 'power2.inOut' }, 1.8)
-                    .to('#scroll-hint', { opacity: 1, duration: 0.6 }, 2.0)
-                    .to('#mj-sil-left, #mj-sil-right', { opacity: 0.06, duration: 1.5, ease: 'power2.out' }, 0.8);
+                // -- Spotlights fade in --
+                gsap.to('#spotlight-l, #spotlight-r', { opacity: 0.8, duration: 2, ease: 'power2.out' });
+                gsap.to('#mj-sil-left, #mj-sil-right', { opacity: 0.06, duration: 2, ease: 'power2.out', delay: 0.5 });
 
                 // -- Vinyl Spin on Scroll --
                 gsap.to('#vinyl-disc', {
