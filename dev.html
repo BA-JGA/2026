@@ -760,38 +760,38 @@
             <!-- Main hero content -->
             <div class="text-center z-10 max-w-4xl">
                 <!-- Small label -->
-                <p id="hero-label" class="text-gold-400 text-sm tracking-[0.3em] uppercase mb-6 font-medium opacity-0">
+                <p id="hero-label" class="text-gold-400 text-sm tracking-[0.3em] uppercase mb-6 font-medium">
                     Der Untergang von
                 </p>
 
-                <!-- Big Name — will be split into chars by GSAP -->
-                <h1 id="hero-name" class="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black mb-2 text-gold-gradient text-gold-glow leading-none opacity-0">
+                <!-- Big Name -->
+                <h1 id="hero-name" class="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black mb-2 text-gold-gradient text-gold-glow leading-none">
                     BABAK
                 </h1>
-                <p id="hero-surname" class="font-display text-xl sm:text-2xl md:text-3xl font-light text-gold-300/50 tracking-[0.2em] mb-6 opacity-0">
+                <p id="hero-surname" class="font-display text-xl sm:text-2xl md:text-3xl font-light text-gold-300/50 tracking-[0.2em] mb-6">
                     AMINI MOGHADAM
                 </p>
 
                 <!-- Subtitle -->
-                <p id="hero-subtitle" class="text-white/60 text-lg sm:text-xl md:text-2xl font-light max-w-2xl mx-auto mb-4 leading-relaxed opacity-0">
+                <p id="hero-subtitle" class="text-white/60 text-lg sm:text-xl md:text-2xl font-light max-w-2xl mx-auto mb-4 leading-relaxed">
                     "Remember the Time" — Ein Abend, der in die Geschichte eingeht.
                 </p>
 
-                <!-- MJ Quote with typewriter -->
-                <p id="hero-quote" class="font-display italic text-gold-400/60 text-base sm:text-lg mt-8 opacity-0">
+                <!-- MJ Quote -->
+                <p id="hero-quote" class="font-display italic text-gold-400/60 text-base sm:text-lg mt-8">
                     "Don't stop 'til you get enough"
                 </p>
 
                 <!-- Vinyl Record -->
-                <div id="hero-vinyl" class="flex justify-center mt-10 opacity-0">
+                <div id="hero-vinyl" class="flex justify-center mt-10">
                     <div class="vinyl" id="vinyl-disc"></div>
                 </div>
 
                 <!-- Divider -->
-                <div id="hero-divider" class="gold-divider mt-8 mb-8 opacity-0"></div>
+                <div id="hero-divider" class="gold-divider mt-8 mb-8"></div>
 
                 <!-- Scroll indicator -->
-                <div id="scroll-hint" class="mt-8 opacity-0">
+                <div id="scroll-hint" class="mt-8">
                     <a href="#story" class="inline-flex flex-col items-center text-white/30 hover:text-gold-300 transition-colors duration-300">
                         <span class="text-xs tracking-widest uppercase mb-2">Scroll</span>
                         <svg width="20" height="30" viewBox="0 0 20 30" class="animate-bounce">
@@ -1237,8 +1237,18 @@
             createParticles('main-particles', 25);
 
             // ===== GSAP ANIMATIONS =====
-            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+            function initGSAP() {
+                if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+                    // GSAP not loaded yet (CDN still downloading), retry
+                    setTimeout(initGSAP, 100);
+                    return;
+                }
                 gsap.registerPlugin(ScrollTrigger);
+
+                // Set initial hidden states
+                gsap.set('#hero-label, #hero-name, #hero-surname, #hero-subtitle, #hero-quote, #hero-vinyl, #hero-divider, #scroll-hint', { opacity: 0 });
+                gsap.set('#hero-name', { scale: 0.5, rotationX: -45 });
+                gsap.set('#spotlight-l, #spotlight-r', { opacity: 0 });
 
                 // -- Scroll Progress Bar --
                 gsap.to('#scroll-progress', {
@@ -1252,8 +1262,7 @@
                 heroTL
                     .to('#spotlight-l, #spotlight-r', { opacity: 0.8, duration: 1.5, ease: 'power2.out' })
                     .to('#hero-label', { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, 0.2)
-                    .fromTo('#hero-name', { opacity: 0, scale: 0.5, rotationX: -45 },
-                        { opacity: 1, scale: 1, rotationX: 0, duration: 1.2, ease: 'back.out(1.4)' }, 0.4)
+                    .to('#hero-name', { opacity: 1, scale: 1, rotationX: 0, duration: 1.2, ease: 'back.out(1.4)' }, 0.4)
                     .to('#hero-surname', { opacity: 1, duration: 0.8, ease: 'power2.out' }, 0.9)
                     .to('#hero-subtitle', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 1.1)
                     .to('#hero-quote', { opacity: 1, duration: 0.8, ease: 'power2.out' }, 1.4)
@@ -1372,16 +1381,8 @@
                     });
                 });
 
-            } else {
-                // Fallback: simple IntersectionObserver if GSAP not loaded
-                var revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
-                var revealObserver = new IntersectionObserver(function(entries) {
-                    entries.forEach(function(entry) {
-                        if (entry.isIntersecting) entry.target.classList.add('active');
-                    });
-                }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-                revealElements.forEach(function(el) { revealObserver.observe(el); });
             }
+            initGSAP();
 
             // ===== ORIGINAL FUNCTIONALITY =====
 
