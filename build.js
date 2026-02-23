@@ -173,6 +173,17 @@ ${headContent}
                     var container = document.getElementById('decrypted-content');
                     container.innerHTML = html;
 
+                    // Re-create iframes so browser loads them after innerHTML injection
+                    var iframes = container.querySelectorAll('iframe');
+                    iframes.forEach(function(oldIframe) {
+                        var newIframe = document.createElement('iframe');
+                        for (var i = 0; i < oldIframe.attributes.length; i++) {
+                            var attr = oldIframe.attributes[i];
+                            newIframe.setAttribute(attr.name, attr.value);
+                        }
+                        oldIframe.parentNode.replaceChild(newIframe, oldIframe);
+                    });
+
                     // Execute scripts in decrypted content
                     var scripts = container.querySelectorAll('script');
                     scripts.forEach(function(old) {
