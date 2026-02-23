@@ -744,6 +744,97 @@
         }
         .line-reveal.active { width: 100%; }
 
+        /* ===== AUDIO EQUALIZER BARS ===== */
+        .equalizer {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 30px;
+        }
+        .eq-bar {
+            width: 4px;
+            background: linear-gradient(180deg, #FFD700, #DAA520);
+            border-radius: 2px;
+            animation: eq-bounce var(--eq-speed, 0.8s) ease-in-out infinite alternate;
+        }
+        @keyframes eq-bounce {
+            0% { height: var(--eq-min, 4px); }
+            100% { height: var(--eq-max, 24px); }
+        }
+
+        /* ===== ENHANCED SPARKLE ===== */
+        .sparkle-ring {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            width: 20px;
+            height: 20px;
+            border: 1px solid rgba(255,215,0,0.4);
+            border-radius: 50%;
+            animation: sparkle-ring-fade 0.8s ease-out forwards;
+        }
+        @keyframes sparkle-ring-fade {
+            0% { opacity: 1; transform: scale(0.3); }
+            100% { opacity: 0; transform: scale(2); }
+        }
+
+        /* ===== CINEMATIC UNLOCK BARS ===== */
+        .cinema-bar {
+            position: fixed;
+            left: 0;
+            right: 0;
+            height: 0;
+            background: black;
+            z-index: 55;
+            transition: height 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+        }
+        .cinema-bar-top { top: 0; }
+        .cinema-bar-bottom { bottom: 0; }
+
+        /* ===== SECTION GLOW PULSE ===== */
+        .section-glow-pulse {
+            position: relative;
+        }
+        .section-glow-pulse::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,215,0,0.03), transparent 60%);
+            animation: glow-breathe 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes glow-breathe {
+            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        /* ===== HOVER LIFT ===== */
+        .hover-lift {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 60px rgba(255,215,0,0.08), 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        /* ===== SMOOTH TEXT GRADIENT ANIM ===== */
+        @keyframes gradient-flow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        .text-gradient-flow {
+            background: linear-gradient(90deg, #FFD700, #FFF8DC, #DAA520, #FFD700, #FFF8DC);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-flow 4s linear infinite;
+        }
+
         img { pointer-events: none; -webkit-user-select: none; user-select: none; }
         body { -webkit-user-select: none; user-select: none; }
         input, textarea { -webkit-user-select: auto; user-select: auto; }
@@ -890,14 +981,25 @@
         <!-- Scroll Progress Bar -->
         <div id="scroll-progress"></div>
 
+        <!-- Cinematic Bars for unlock transition -->
+        <div class="cinema-bar cinema-bar-top" id="cinema-top"></div>
+        <div class="cinema-bar cinema-bar-bottom" id="cinema-bottom"></div>
+
         <!-- Persistent Gold Particles -->
         <div id="main-particles" class="fixed inset-0 pointer-events-none z-30 overflow-hidden"></div>
 
         <!-- ====== STICKY NAVIGATION ====== -->
         <nav id="navbar" class="fixed top-0 w-full z-40 transition-all duration-500" style="background: rgba(10,10,10,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,215,0,0.1);">
             <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                <!-- Logo/Title -->
-                <a href="#hero" class="font-display text-xl font-bold text-gold-gradient tracking-wide">BAM</a>
+                <!-- Logo/Title with mini equalizer -->
+                <a href="#hero" class="font-display text-xl font-bold text-gold-gradient tracking-wide flex items-center gap-2">
+                    BAM
+                    <span class="equalizer" style="height:16px;">
+                        <span class="eq-bar" style="--eq-speed:0.5s;--eq-min:3px;--eq-max:12px;width:2px;"></span>
+                        <span class="eq-bar" style="--eq-speed:0.7s;--eq-min:2px;--eq-max:16px;width:2px;animation-delay:0.2s;"></span>
+                        <span class="eq-bar" style="--eq-speed:0.4s;--eq-min:4px;--eq-max:10px;width:2px;animation-delay:0.4s;"></span>
+                    </span>
+                </a>
 
                 <!-- Desktop Nav Links -->
                 <div class="hidden sm:flex items-center gap-8">
@@ -988,9 +1090,23 @@
                     "Don't stop 'til you get enough"
                 </p>
 
-                <!-- Vinyl Record -->
-                <div id="hero-vinyl" class="flex justify-center mt-10" style="animation: fadeInUp 0.8s ease-out 1s both">
+                <!-- Vinyl Record + Equalizer -->
+                <div id="hero-vinyl" class="flex items-center justify-center gap-6 mt-10" style="animation: fadeInUp 0.8s ease-out 1s both">
+                    <div class="equalizer" id="hero-eq-left" style="height:28px;opacity:0.4;">
+                        <span class="eq-bar" style="--eq-speed:0.6s;--eq-min:4px;--eq-max:20px;"></span>
+                        <span class="eq-bar" style="--eq-speed:0.8s;--eq-min:6px;--eq-max:28px;animation-delay:0.1s;"></span>
+                        <span class="eq-bar" style="--eq-speed:0.5s;--eq-min:3px;--eq-max:18px;animation-delay:0.3s;"></span>
+                        <span class="eq-bar" style="--eq-speed:0.7s;--eq-min:5px;--eq-max:24px;animation-delay:0.2s;"></span>
+                        <span class="eq-bar" style="--eq-speed:0.9s;--eq-min:4px;--eq-max:22px;animation-delay:0.4s;"></span>
+                    </div>
                     <div class="vinyl" id="vinyl-disc"></div>
+                    <div class="equalizer" id="hero-eq-right" style="height:28px;opacity:0.4;">
+                        <span class="eq-bar" style="--eq-speed:0.7s;--eq-min:5px;--eq-max:22px;animation-delay:0.15s;"></span>
+                        <span class="eq-bar" style="--eq-speed:0.5s;--eq-min:3px;--eq-max:26px;animation-delay:0.35s;"></span>
+                        <span class="eq-bar" style="--eq-speed:0.8s;--eq-min:6px;--eq-max:20px;animation-delay:0.05s;"></span>
+                        <span class="eq-bar" style="--eq-speed:0.6s;--eq-min:4px;--eq-max:24px;animation-delay:0.25s;"></span>
+                        <span class="eq-bar" style="--eq-speed:0.4s;--eq-min:3px;--eq-max:18px;animation-delay:0.45s;"></span>
+                    </div>
                 </div>
 
                 <!-- Divider -->
@@ -1050,7 +1166,7 @@
         </div>
 
         <!-- ====== STORY SECTION ====== -->
-        <section id="story" class="relative py-24 sm:py-32 px-6">
+        <section id="story" class="relative py-24 sm:py-32 px-6 section-glow-pulse">
             <!-- Ambient orb -->
             <div class="gradient-orb" style="width:400px;height:400px;background:radial-gradient(circle,#FFD700,transparent);top:10%;right:-10%;animation:orb-drift-2 20s ease-in-out infinite;"></div>
 
@@ -1139,19 +1255,19 @@
 
                 <!-- Fun Stats Counter -->
                 <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
-                    <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02]">
+                    <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift">
                         <p class="font-display text-3xl sm:text-4xl font-bold text-gold-gradient counter-number" data-target="12">0</p>
                         <p class="text-white/30 text-sm mt-2">Beste Freunde</p>
                     </div>
-                    <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02]">
+                    <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift">
                         <p class="font-display text-3xl sm:text-4xl font-bold text-gold-gradient counter-number" data-target="1">0</p>
                         <p class="text-white/30 text-sm mt-2">King of Pop</p>
                     </div>
-                    <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02]">
+                    <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift">
                         <p class="font-display text-3xl sm:text-4xl font-bold text-gold-gradient counter-number" data-target="2026">0</p>
                         <p class="text-white/30 text-sm mt-2">Das Jahr</p>
                     </div>
-                    <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02]">
+                    <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift">
                         <p class="font-display text-3xl sm:text-4xl font-bold text-gold-gradient counter-number" data-target="100" data-suffix="%">0</p>
                         <p class="text-white/30 text-sm mt-2">Unvergesslich</p>
                     </div>
@@ -1239,7 +1355,7 @@
         </div>
 
         <!-- ====== COMMENTS SECTION ====== -->
-        <section id="kommentare" class="relative py-24 sm:py-32 px-6">
+        <section id="kommentare" class="relative py-24 sm:py-32 px-6 section-glow-pulse">
             <div class="max-w-3xl mx-auto">
                 <!-- Section Header -->
                 <div class="text-center mb-16 reveal stagger-in">
@@ -1465,16 +1581,36 @@
                 const hash = await hashPassword(pw);
 
                 if (hash === CORRECT_HASH) {
-                    lockScreen.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                    // Cinematic unlock sequence
+                    // 1. Cinema bars slide in
+                    mainContent.classList.remove('hidden');
+                    var cTop = document.getElementById('cinema-top');
+                    var cBot = document.getElementById('cinema-bottom');
+                    if (cTop && cBot) {
+                        cTop.style.height = '60px';
+                        cBot.style.height = '60px';
+                    }
+
+                    // 2. Lock screen fades out with blur
+                    lockScreen.style.transition = 'opacity 0.6s ease, transform 0.6s ease, filter 0.6s ease';
                     lockScreen.style.opacity = '0';
-                    lockScreen.style.transform = 'scale(1.05)';
+                    lockScreen.style.transform = 'scale(1.1)';
+                    lockScreen.style.filter = 'blur(10px)';
 
                     setTimeout(() => {
                         lockScreen.style.display = 'none';
-                        mainContent.classList.remove('hidden');
-                        mainContent.style.animation = 'fadeIn 1s ease-out';
+                        mainContent.style.animation = 'fadeIn 0.8s ease-out';
                         sparklesEnabled = true;
                         initMainPage();
+
+                        // 3. Cinema bars retract after content appears
+                        setTimeout(function() {
+                            if (cTop && cBot) {
+                                cTop.style.height = '0';
+                                cBot.style.height = '0';
+                            }
+                        }, 600);
+
                         try {
                             var a = new Audio('assets/intro.mp3'); a.volume = 0.5; a.play();
                             setTimeout(function() { a.pause(); }, 3000);
@@ -1483,7 +1619,7 @@
                                 if (!resumed && a.paused) { resumed = true; a.play(); }
                             }, { once: true });
                         } catch(e) {}
-                    }, 800);
+                    }, 700);
                 } else {
                     passwordInput.classList.add('shake');
                     errorMsg.style.opacity = '1';
@@ -1531,20 +1667,38 @@
         // Start lock screen particles
         createParticles('lock-particles', 40);
 
-        // ---- Cursor Sparkle Trail ----
+        // ---- Cursor Sparkle Trail (Enhanced) ----
         let sparkleThrottle = 0;
+        let sparkleRingThrottle = 0;
         let sparklesEnabled = !lockScreen; // Enable immediately in encrypted mode
         document.addEventListener('mousemove', (e) => {
             if (!sparklesEnabled) return;
-            if (Date.now() - sparkleThrottle < 50) return;
-            sparkleThrottle = Date.now();
+            var now = Date.now();
 
-            const sparkle = document.createElement('div');
-            sparkle.className = 'cursor-sparkle';
-            sparkle.style.left = e.clientX + 'px';
-            sparkle.style.top = e.clientY + 'px';
-            document.body.appendChild(sparkle);
-            setTimeout(() => sparkle.remove(), 600);
+            // Gold dot sparkle (frequent)
+            if (now - sparkleThrottle > 40) {
+                sparkleThrottle = now;
+                var sparkle = document.createElement('div');
+                sparkle.className = 'cursor-sparkle';
+                sparkle.style.left = (e.clientX + (Math.random() - 0.5) * 8) + 'px';
+                sparkle.style.top = (e.clientY + (Math.random() - 0.5) * 8) + 'px';
+                var size = 2 + Math.random() * 4;
+                sparkle.style.width = size + 'px';
+                sparkle.style.height = size + 'px';
+                document.body.appendChild(sparkle);
+                setTimeout(function() { sparkle.remove(); }, 600);
+            }
+
+            // Ring sparkle (less frequent)
+            if (now - sparkleRingThrottle > 200) {
+                sparkleRingThrottle = now;
+                var ring = document.createElement('div');
+                ring.className = 'sparkle-ring';
+                ring.style.left = (e.clientX - 10) + 'px';
+                ring.style.top = (e.clientY - 10) + 'px';
+                document.body.appendChild(ring);
+                setTimeout(function() { ring.remove(); }, 800);
+            }
         });
 
         // ---- Logout ----

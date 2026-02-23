@@ -207,6 +207,18 @@ ${headContent}
             container.innerHTML = html;
             if (withAudio) playIntro();
 
+            // Cinematic bars retract
+            var cTop = container.querySelector('#cinema-top');
+            var cBot = container.querySelector('#cinema-bottom');
+            if (cTop && cBot) {
+                cTop.style.height = '60px';
+                cBot.style.height = '60px';
+                setTimeout(function() {
+                    cTop.style.height = '0';
+                    cBot.style.height = '0';
+                }, 600);
+            }
+
             Array.from(container.querySelectorAll('iframe')).forEach(function(oldIframe) {
                 var newIframe = document.createElement('iframe');
                 for (var i = 0; i < oldIframe.attributes.length; i++) {
@@ -241,11 +253,12 @@ ${headContent}
                 savePw(pw);
 
                 var ls = document.getElementById('lock-screen');
-                ls.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                ls.style.transition = 'opacity 0.6s ease, transform 0.6s ease, filter 0.6s ease';
                 ls.style.opacity = '0';
-                ls.style.transform = 'scale(1.05)';
+                ls.style.transform = 'scale(1.1)';
+                ls.style.filter = 'blur(10px)';
 
-                setTimeout(function() { injectContent(html, true); }, 800);
+                setTimeout(function() { injectContent(html, true); }, 700);
             } catch(e) {
                 pwInput.classList.add('shake');
                 errorMsg.style.opacity = '1';
