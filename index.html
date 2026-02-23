@@ -12,13 +12,19 @@
         /* Login Bereich */
         #login-area { text-align: center; padding: 50px 10px; }
         .lock-icon { font-size: 50px; margin-bottom: 20px; }
-        input[type="password"] { padding: 12px; width: 80%; max-width: 300px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; outline: none; transition: border-color 0.3s; }
-        input[type="password"]:focus { border-color: #3498db; }
-        button { background: #3498db; color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-size: 16px; margin-top: 15px; transition: background 0.3s; }
+        
+        /* Passwort-Feld Wrapper für das Auge */
+        .password-wrapper { position: relative; width: 80%; max-width: 300px; margin: 0 auto; }
+        input[type="password"], input[type="text"] { padding: 12px; width: 100%; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; outline: none; transition: border-color 0.3s; box-sizing: border-box; }
+        input:focus { border-color: #3498db; }
+        
+        .toggle-password { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; user-select: none; }
+
+        button { background: #3498db; color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-size: 16px; margin-top: 15px; transition: background 0.3s; width: 80%; max-width: 300px; }
         button:hover { background: #2980b9; }
         #error-msg { color: #e74c3c; margin-top: 15px; font-weight: bold; display: none; }
 
-        /* Content Bereich (Anfangs versteckt) */
+        /* Content Bereich */
         #content-area { display: none; animation: fadeIn 0.8s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -42,9 +48,13 @@
     <div id="login-area">
         <div class="lock-icon">🔐</div>
         <h1>Privatbereich</h1>
-        <p>Bitte gib das Passwort ein, um die Seite zu öffnen.</p>
-        <input type="password" id="pw-field" placeholder="Passwort eingeben...">
-        <br>
+        <p>Bitte gib das Passwort ein:</p>
+        
+        <div class="password-wrapper">
+            <input type="password" id="pw-field" placeholder="Passwort eingeben...">
+            <span class="toggle-password" onclick="toggleVisibility()">👁️</span>
+        </div>
+        
         <button onclick="checkPW()">Seite öffnen</button>
         <p id="error-msg">Falsches Passwort. Bitte versuch es nochmal!</p>
     </div>
@@ -58,7 +68,7 @@
 
         <section id="botschaft">
             <h1>Mach's gut, Kollege!</h1>
-            <p>Hier ist Platz für deine persönlichen Abschiedsworte. Schreib hier alles rein, was du dem Kollegen mit auf den Weg geben willst. Die gemeinsame Zeit im Team war super!</p>
+            <p>Hier ist Platz für deine persönlichen Abschiedsworte. Die gemeinsame Zeit im Team war super!</p>
         </section>
 
         <section id="fotos">
@@ -85,6 +95,19 @@
 </div>
 
 <script>
+    // Passwort sichtbar machen / verstecken
+    function toggleVisibility() {
+        const pwField = document.getElementById('pw-field');
+        const icon = document.querySelector('.toggle-password');
+        if (pwField.type === "password") {
+            pwField.type = "text";
+            icon.textContent = "🙈"; // Affe zu, wenn sichtbar
+        } else {
+            pwField.type = "password";
+            icon.textContent = "👁️"; // Auge, wenn versteckt
+        }
+    }
+
     async function checkPW() {
         const input = document.getElementById('pw-field').value;
         const error = document.getElementById('error-msg');
@@ -94,7 +117,7 @@
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-        // Dies ist der neue Fingerabdruck für: Iranazadi
+        // Passwort: Iranazadi
         const correctHash = "0407a2f578b173167a579624898144075191060960586e398939a95701d52d9a";
 
         if (hashHex === correctHash) {
