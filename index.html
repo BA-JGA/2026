@@ -1,9 +1,118 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
-    <meta http-equiv="refresh" content="0; URL='https://www.google.de'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alles Gute zum Abschied!</title>
+    <style>
+        /* Design & Layout */
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f0f2f5; margin: 0; display: flex; justify-content: center; min-height: 100vh; }
+        .container { max-width: 700px; width: 90%; background: white; margin: 20px 0; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        
+        /* Login Bereich */
+        #login-area { text-align: center; padding: 50px 10px; }
+        .lock-icon { font-size: 50px; margin-bottom: 20px; }
+        input[type="password"] { padding: 12px; width: 80%; max-width: 300px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; outline: none; transition: border-color 0.3s; }
+        input[type="password"]:focus { border-color: #3498db; }
+        button { background: #3498db; color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-size: 16px; margin-top: 15px; transition: background 0.3s; }
+        button:hover { background: #2980b9; }
+        #error-msg { color: #e74c3c; margin-top: 15px; font-weight: bold; display: none; }
+
+        /* Content Bereich (Anfangs versteckt) */
+        #content-area { display: none; animation: fadeIn 0.8s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        h1 { color: #2c3e50; text-align: center; }
+        .menu { display: flex; justify-content: center; gap: 20px; margin: 30px 0; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+        .menu a { text-decoration: none; color: #3498db; font-weight: bold; font-size: 14px; text-transform: uppercase; }
+        
+        section { margin-bottom: 50px; }
+        p { line-height: 1.6; color: #555; font-size: 18px; }
+        
+        .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .gallery img { width: 100%; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        
+        .video-box { background: #000; border-radius: 12px; overflow: hidden; margin-top: 20px; }
+        footer { text-align: center; font-size: 12px; color: #aaa; margin-top: 50px; }
+    </style>
 </head>
 <body>
-    <p>Weiterleitung... <a href="https://www.google.de">Hier klicken</a></p>
+
+<div class="container">
+    <div id="login-area">
+        <div class="lock-icon">🔐</div>
+        <h1>Privatbereich</h1>
+        <p>Bitte gib das Passwort ein, um die Seite zu öffnen.</p>
+        <input type="password" id="pw-field" placeholder="Passwort eingeben...">
+        <br>
+        <button onclick="checkPW()">Seite öffnen</button>
+        <p id="error-msg">Falsches Passwort. Bitte versuch es nochmal!</p>
+    </div>
+
+    <div id="content-area">
+        <nav class="menu">
+            <a href="#botschaft">Wünsche</a>
+            <a href="#fotos">Fotos</a>
+            <a href="#video">Video</a>
+        </nav>
+
+        <section id="botschaft">
+            <h1>Mach's gut, Kollege!</h1>
+            <p>Hier ist Platz für deine persönlichen Abschiedsworte. Schreib hier alles rein, was du dem Kollegen mit auf den Weg geben willst. Die gemeinsame Zeit im Team war super!</p>
+        </section>
+
+        <section id="fotos">
+            <h2>Erinnerungen</h2>
+            <div class="gallery">
+                <img src="bild1.jpg" alt="Foto 1">
+                <img src="bild2.jpg" alt="Foto 2">
+                <img src="bild3.jpg" alt="Foto 3">
+            </div>
+        </section>
+
+        <section id="video">
+            <h2>Unsere Video-Botschaft</h2>
+            <div class="video-box">
+                <video width="100%" controls>
+                    <source src="video.mp4" type="video/mp4">
+                    Dein Browser unterstützt keine Videos.
+                </video>
+            </div>
+        </section>
+
+        <footer>Erstellt mit ❤️ vom Team</footer>
+    </div>
+</div>
+
+<script>
+    async function checkPW() {
+        const input = document.getElementById('pw-field').value;
+        const error = document.getElementById('error-msg');
+        
+        // Hash-Check für Passwort: Abschied2026
+        const msgUint8 = new TextEncoder().encode(input);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+        // Dies ist der "Fingerabdruck" von Abschied2026
+        const correctHash = "7f742f1f008899896328373b9e4a3c1a8a25c34537651c6e18f276629910e53a";
+
+        if (hashHex === correctHash) {
+            document.getElementById('login-area').style.display = 'none';
+            document.getElementById('content-area').style.display = 'block';
+        } else {
+            error.style.display = 'block';
+        }
+    }
+
+    // Enter-Taste zum Einloggen ermöglichen
+    document.getElementById("pw-field").addEventListener("keyup", function(event) {
+        if (event.key === "Enter") {
+            checkPW();
+        }
+    });
+</script>
+
 </body>
 </html>
