@@ -394,13 +394,78 @@
     <!-- ============================================ -->
     <!-- LOCK SCREEN -->
     <!-- ============================================ -->
-    <div id="lock-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black">
+    <div id="lock-screen" class="fixed inset-0 z-50 bg-black overflow-y-auto">
         <!-- Lock screen particles -->
         <div id="lock-particles" class="fixed inset-0 pointer-events-none overflow-hidden"></div>
 
-        <!-- MJ Fedora Hat Decoration -->
-        <div class="relative z-10 flex flex-col items-center px-6 text-center" style="animation: fadeIn 1.5s ease-out">
+        <!-- ===== STEP 1: Group Photo Question ===== -->
+        <div id="step-1" class="min-h-screen flex flex-col items-center justify-center px-6 py-12 relative z-10" style="animation: fadeIn 1s ease-out">
+            <!-- MJ Hat -->
+            <svg width="60" height="38" viewBox="0 0 80 50" class="mb-6 opacity-50" style="animation: float 4s ease-in-out infinite">
+                <ellipse cx="40" cy="42" rx="40" ry="8" fill="#FFD700" opacity="0.8"/>
+                <ellipse cx="40" cy="38" rx="28" ry="20" fill="#1a1a1a" stroke="#FFD700" stroke-width="1.5"/>
+                <path d="M12 38 Q40 10 68 38" fill="#1a1a1a" stroke="#FFD700" stroke-width="1"/>
+                <rect x="28" y="22" width="24" height="6" rx="2" fill="#FFD700" opacity="0.6"/>
+            </svg>
 
+            <h1 class="font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-2 text-gold-gradient text-center" style="animation: fadeInUp 0.8s ease-out 0.2s both">
+                Einen Moment...
+            </h1>
+            <p class="text-white/50 text-sm sm:text-base mb-8 text-center max-w-md" style="animation: fadeInUp 0.8s ease-out 0.4s both">
+                Bevor es losgeht, eine kurze Frage.
+            </p>
+
+            <!-- Group Photo -->
+            <div class="w-full max-w-xl mb-8 rounded-2xl overflow-hidden border border-gold-300/20 shadow-lg shadow-gold-300/5" style="animation: fadeInUp 0.8s ease-out 0.6s both">
+                <img src="assets/gruppe.jpg" alt="Die Gruppe" class="w-full h-auto block">
+            </div>
+
+            <p class="font-display text-xl sm:text-2xl font-semibold text-white text-center mb-8" style="animation: fadeInUp 0.8s ease-out 0.8s both">
+                Bist du einer dieser Personen?
+            </p>
+
+            <div class="flex gap-4" style="animation: fadeInUp 0.8s ease-out 1s both">
+                <button onclick="goToStep('password')" class="btn-gold text-sm tracking-wider uppercase px-8">
+                    Ja, bin ich
+                </button>
+                <button onclick="goToStep('step-2')" class="px-8 py-3.5 rounded-xl border border-white/20 text-white/60 hover:text-white hover:border-gold-300/40 transition-all text-sm tracking-wider uppercase font-medium">
+                    Nein
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== STEP 2: Woman Photo Question ===== -->
+        <div id="step-2" class="hidden min-h-screen flex flex-col items-center justify-center px-6 py-12 relative z-10">
+            <p class="text-white/40 text-sm mb-6 text-center" style="animation: fadeInUp 0.8s ease-out 0.1s both">
+                Hmm, okay... dann vielleicht...
+            </p>
+
+            <h2 class="font-display text-2xl sm:text-3xl font-bold mb-8 text-gold-gradient text-center" style="animation: fadeInUp 0.8s ease-out 0.3s both">
+                Bist du diese Person?
+            </h2>
+
+            <!-- Woman Photo (Placeholder) -->
+            <div class="w-64 h-64 sm:w-72 sm:h-72 mb-8 rounded-2xl overflow-hidden border border-gold-300/20 shadow-lg shadow-gold-300/5 bg-dark-50 flex items-center justify-center" style="animation: fadeInUp 0.8s ease-out 0.5s both">
+                <!-- PLACEHOLDER: Replace with actual image -->
+                <!-- <img src="assets/frau.jpg" alt="" class="w-full h-full object-cover"> -->
+                <div class="text-center">
+                    <p class="text-5xl mb-3">👰</p>
+                    <p class="text-white/20 text-xs">Foto kommt noch</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4" style="animation: fadeInUp 0.8s ease-out 0.7s both">
+                <button onclick="redirectAway()" class="btn-gold text-sm tracking-wider uppercase px-8">
+                    Ja, das bin ich
+                </button>
+                <button onclick="goToStep('password')" class="px-8 py-3.5 rounded-xl border border-white/20 text-white/60 hover:text-white hover:border-gold-300/40 transition-all text-sm tracking-wider uppercase font-medium">
+                    Nein, ich bin jemand anderes
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== STEP 3: Password Entry ===== -->
+        <div id="step-password" class="hidden min-h-screen flex flex-col items-center justify-center px-6 py-12 relative z-10">
             <!-- Hat SVG -->
             <svg width="80" height="50" viewBox="0 0 80 50" class="mb-8 opacity-60" style="animation: float 4s ease-in-out infinite">
                 <ellipse cx="40" cy="42" rx="40" ry="8" fill="#FFD700" opacity="0.8"/>
@@ -415,20 +480,20 @@
             </h1>
 
             <!-- Funny subtitle -->
-            <p class="text-white/50 text-sm sm:text-base md:text-lg mb-2 max-w-md leading-relaxed" style="animation: fadeInUp 1.5s ease-out 0.3s both">
+            <p class="text-white/50 text-sm sm:text-base md:text-lg mb-2 max-w-md leading-relaxed text-center">
                 Wenn du diese Seite betrittst,<br>bist du bereits Teil von
             </p>
-            <p class="text-gold-gradient font-display text-2xl sm:text-3xl font-bold mb-10" style="animation: fadeInUp 1.5s ease-out 0.5s both">
+            <p class="text-gold-gradient font-display text-2xl sm:text-3xl font-bold mb-10">
                 Babaks Scheidung
             </p>
 
             <!-- Disclaimer -->
-            <p class="text-white/20 text-xs mb-8 max-w-xs" style="animation: fadeInUp 1.5s ease-out 0.7s both">
+            <p class="text-white/20 text-xs mb-8 max-w-xs text-center">
                 * Vom Junggesellenleben. Kein Anwalt nötig. Vielleicht.
             </p>
 
             <!-- Password Input -->
-            <div class="relative" style="animation: fadeInUp 1.5s ease-out 0.9s both">
+            <div class="relative">
                 <input
                     type="password"
                     id="password-input"
@@ -443,12 +508,12 @@
             </div>
 
             <!-- Enter Button -->
-            <button id="enter-btn" class="btn-gold mt-6 text-sm tracking-wider uppercase" style="animation: fadeInUp 1.5s ease-out 1.1s both">
+            <button id="enter-btn" class="btn-gold mt-6 text-sm tracking-wider uppercase">
                 Eintreten
             </button>
 
             <!-- Small hint -->
-            <p class="text-white/10 text-xs mt-12" style="animation: fadeIn 2s ease-out 2s both">
+            <p class="text-white/10 text-xs mt-12">
                 ♪ Just Beat It... oder gib das richtige Passwort ein ♪
             </p>
         </div>
@@ -797,6 +862,42 @@
     <!-- ============================================ -->
     <!-- JAVASCRIPT -->
     <!-- ============================================ -->
+    <script>
+    // ---- Step Navigation (global, needed for onclick) ----
+    function goToStep(stepId) {
+        // Hide all steps inside lock-screen
+        ['step-1', 'step-2', 'step-password'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) { el.classList.add('hidden'); el.style.animation = ''; }
+        });
+
+        // Map shorthand
+        var targetId = (stepId === 'password') ? 'step-password' : stepId;
+        var target = document.getElementById(targetId);
+        if (target) {
+            target.classList.remove('hidden');
+            target.style.animation = 'fadeIn 0.6s ease-out';
+        }
+
+        // Focus password input
+        if (stepId === 'password') {
+            setTimeout(function() {
+                var inp = document.getElementById('password-input');
+                if (inp) inp.focus();
+            }, 400);
+        }
+    }
+
+    // Redirect URL for the woman (placeholder — change later)
+    var REDIRECT_URL = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+
+    function redirectAway() {
+        document.getElementById('lock-screen').style.transition = 'opacity 0.5s ease';
+        document.getElementById('lock-screen').style.opacity = '0';
+        setTimeout(function() { window.location.href = REDIRECT_URL; }, 500);
+    }
+    </script>
+
     <script>
     (function() {
         'use strict';
