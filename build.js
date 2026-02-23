@@ -98,7 +98,7 @@ ${headContent}
         if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S' || e.key === 'u' || e.key === 'U')) e.preventDefault();
     });
     </script>
-    <style>img { pointer-events: none; -webkit-user-select: none; user-select: none; } body { -webkit-user-select: none; user-select: none; } input, textarea { -webkit-user-select: auto; user-select: auto; }</style>
+    <style>img { pointer-events: none; -webkit-user-select: none; user-select: none; } body { -webkit-user-select: none; user-select: none; } input, textarea { -webkit-user-select: auto; user-select: auto; } @media print { body { display: none !important; } }</style>
 
     <script>
     (function() {
