@@ -21,6 +21,9 @@
         }
     }
     </script>
+    <!-- GSAP + ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.14.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.14.1/ScrollTrigger.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&display=swap" rel="stylesheet">
@@ -387,6 +390,164 @@
             80% { opacity: 0.3; }
             100% { opacity: 0; transform: translateY(-80px) rotate(15deg); }
         }
+
+        /* ===== PREMIUM EFFECTS ===== */
+
+        /* Film Grain Overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 9998;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* Spotlight Beam */
+        .spotlight {
+            position: absolute;
+            width: 300px;
+            height: 600px;
+            background: linear-gradient(180deg, rgba(255,215,0,0.15) 0%, transparent 100%);
+            clip-path: polygon(40% 0%, 60% 0%, 100% 100%, 0% 100%);
+            pointer-events: none;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        /* MJ Silhouette */
+        .mj-silhouette {
+            position: absolute;
+            opacity: 0.06;
+            z-index: 1;
+            filter: drop-shadow(0 0 30px rgba(255,215,0,0.3));
+        }
+
+        /* Split text chars */
+        .split-char {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(80px) rotateX(-90deg);
+        }
+
+        /* Horizontal scroll section */
+        .horizontal-section {
+            overflow: hidden;
+        }
+
+        /* Gold glow text */
+        .text-gold-glow {
+            text-shadow: 0 0 20px rgba(255,215,0,0.4), 0 0 40px rgba(255,215,0,0.2), 0 0 80px rgba(255,215,0,0.1);
+        }
+
+        /* Vinyl Record */
+        .vinyl {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #1a1a1a, #2a2a2a, #1a1a1a, #2a2a2a, #1a1a1a);
+            border: 3px solid rgba(255,215,0,0.3);
+            position: relative;
+        }
+        .vinyl::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #FFD700;
+            border: 4px solid #0a0a0a;
+        }
+        @keyframes spin-vinyl {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Section divider with MJ flair */
+        .mj-divider {
+            position: relative;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .mj-divider::before, .mj-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.3), transparent);
+        }
+
+        /* Scroll progress bar */
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #FFD700, #FFF8DC, #DAA520);
+            z-index: 9999;
+            transform-origin: left;
+            transform: scaleX(0);
+        }
+
+        /* Parallax layer */
+        .parallax-bg {
+            position: absolute;
+            inset: -20%;
+            z-index: 0;
+        }
+
+        /* Image reveal clip */
+        .img-reveal {
+            clip-path: inset(100% 0% 0% 0%);
+        }
+
+        /* Quote marks decorative */
+        .quote-mark {
+            font-family: 'Playfair Display', serif;
+            font-size: 8rem;
+            line-height: 0;
+            color: rgba(255,215,0,0.08);
+            position: absolute;
+        }
+
+        /* Glowing border animation */
+        @keyframes border-glow {
+            0%, 100% { border-color: rgba(255,215,0,0.1); }
+            50% { border-color: rgba(255,215,0,0.4); }
+        }
+        .glow-border {
+            animation: border-glow 3s ease-in-out infinite;
+        }
+
+        /* Typewriter cursor */
+        .typewriter-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1em;
+            background: #FFD700;
+            margin-left: 4px;
+            animation: blink 0.8s step-end infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Stage floor reflection */
+        .stage-reflection {
+            background: linear-gradient(180deg, transparent 0%, rgba(255,215,0,0.03) 50%, transparent 100%);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            pointer-events: none;
+        }
         img { pointer-events: none; -webkit-user-select: none; user-select: none; }
         body { -webkit-user-select: none; user-select: none; }
         input, textarea { -webkit-user-select: auto; user-select: auto; }
@@ -530,6 +691,9 @@
     <!-- ============================================ -->
     <div id="main-content" class="hidden">
 
+        <!-- Scroll Progress Bar -->
+        <div id="scroll-progress"></div>
+
         <!-- Persistent Gold Particles -->
         <div id="main-particles" class="fixed inset-0 pointer-events-none z-30 overflow-hidden"></div>
 
@@ -568,42 +732,66 @@
 
         <!-- ====== HERO SECTION ====== -->
         <section id="hero" class="relative min-h-screen flex flex-col items-center justify-center hero-bg overflow-hidden px-6">
-            <!-- Decorative floating elements -->
-            <div class="float-element top-20 left-10 text-gold-300 text-6xl" style="animation-delay: 0s;">♪</div>
-            <div class="float-element top-40 right-16 text-gold-300 text-4xl" style="animation-delay: 1s;">♫</div>
-            <div class="float-element bottom-32 left-20 text-gold-300 text-5xl" style="animation-delay: 2s;">★</div>
-            <div class="float-element bottom-20 right-10 text-gold-300 text-3xl" style="animation-delay: 3s;">♪</div>
+            <!-- Spotlight Beams -->
+            <div class="spotlight" id="spotlight-l" style="left: 10%; top: -50px; transform: rotate(-8deg);"></div>
+            <div class="spotlight" id="spotlight-r" style="right: 10%; top: -50px; transform: rotate(8deg);"></div>
+
+            <!-- MJ Dancing Silhouette (left) -->
+            <svg class="mj-silhouette hidden sm:block" style="left: 5%; bottom: 10%; width: 180px;" id="mj-sil-left" viewBox="0 0 200 400" fill="currentColor" color="#FFD700">
+                <path d="M100 20 C90 20 85 30 85 40 C85 55 90 60 100 60 C110 60 115 55 115 40 C115 30 110 20 100 20Z M70 70 L60 160 L50 200 L70 200 L80 170 L100 240 L85 380 L95 385 L115 260 L135 385 L145 380 L130 240 L140 170 L150 200 L160 200 L150 160 L140 70 Z"/>
+            </svg>
+
+            <!-- MJ Moonwalk Silhouette (right) -->
+            <svg class="mj-silhouette hidden sm:block" style="right: 5%; bottom: 10%; width: 160px;" id="mj-sil-right" viewBox="0 0 200 400" fill="currentColor" color="#FFD700">
+                <path d="M110 20 C100 20 95 30 95 40 C95 55 100 60 110 60 C120 60 125 55 125 40 C125 30 120 20 110 20Z M80 70 L55 180 L40 210 L60 215 L75 185 L90 250 L70 380 L82 385 L105 265 L125 385 L137 380 L120 250 L135 185 L155 215 L170 210 L150 180 L130 70Z"/>
+            </svg>
+
+            <!-- Stage Floor Reflection -->
+            <div class="stage-reflection"></div>
+
+            <!-- Decorative floating music notes (parallax) -->
+            <div class="float-element top-20 left-10 text-gold-300 text-6xl" data-speed="0.3" style="animation-delay: 0s;">♪</div>
+            <div class="float-element top-40 right-16 text-gold-300 text-4xl" data-speed="0.5" style="animation-delay: 1s;">♫</div>
+            <div class="float-element bottom-32 left-20 text-gold-300 text-5xl" data-speed="0.2" style="animation-delay: 2s;">★</div>
+            <div class="float-element bottom-20 right-10 text-gold-300 text-3xl" data-speed="0.4" style="animation-delay: 3s;">♪</div>
+            <div class="float-element top-60 left-[30%] text-gold-300 text-3xl" data-speed="0.6" style="animation-delay: 1.5s;">♫</div>
+            <div class="float-element bottom-40 right-[25%] text-gold-300 text-4xl" data-speed="0.35" style="animation-delay: 2.5s;">★</div>
 
             <!-- Main hero content -->
             <div class="text-center z-10 max-w-4xl">
                 <!-- Small label -->
-                <p class="text-gold-400 text-sm tracking-[0.3em] uppercase mb-6 font-medium" style="animation: fadeInUp 0.8s ease-out 0.2s both">
+                <p id="hero-label" class="text-gold-400 text-sm tracking-[0.3em] uppercase mb-6 font-medium opacity-0">
                     Der Untergang von
                 </p>
 
-                <!-- Big Name -->
-                <h1 class="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black mb-2 text-gold-gradient leading-none" style="animation: fadeInUp 0.8s ease-out 0.4s both">
+                <!-- Big Name — will be split into chars by GSAP -->
+                <h1 id="hero-name" class="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black mb-2 text-gold-gradient text-gold-glow leading-none opacity-0">
                     BABAK
                 </h1>
-                <p class="font-display text-xl sm:text-2xl md:text-3xl font-light text-gold-300/50 tracking-[0.2em] mb-6" style="animation: fadeInUp 0.8s ease-out 0.5s both">
+                <p id="hero-surname" class="font-display text-xl sm:text-2xl md:text-3xl font-light text-gold-300/50 tracking-[0.2em] mb-6 opacity-0">
                     AMINI MOGHADAM
                 </p>
 
                 <!-- Subtitle -->
-                <p class="text-white/60 text-lg sm:text-xl md:text-2xl font-light max-w-2xl mx-auto mb-4 leading-relaxed" style="animation: fadeInUp 0.8s ease-out 0.6s both">
+                <p id="hero-subtitle" class="text-white/60 text-lg sm:text-xl md:text-2xl font-light max-w-2xl mx-auto mb-4 leading-relaxed opacity-0">
                     "Remember the Time" — Ein Abend, der in die Geschichte eingeht.
                 </p>
 
-                <!-- MJ Quote -->
-                <p class="font-display italic text-gold-400/60 text-base sm:text-lg mt-8" style="animation: fadeInUp 0.8s ease-out 0.8s both">
+                <!-- MJ Quote with typewriter -->
+                <p id="hero-quote" class="font-display italic text-gold-400/60 text-base sm:text-lg mt-8 opacity-0">
                     "Don't stop 'til you get enough"
                 </p>
 
+                <!-- Vinyl Record -->
+                <div id="hero-vinyl" class="flex justify-center mt-10 opacity-0">
+                    <div class="vinyl" id="vinyl-disc"></div>
+                </div>
+
                 <!-- Divider -->
-                <div class="gold-divider mt-12 mb-8" style="animation: fadeIn 1s ease-out 1s both"></div>
+                <div id="hero-divider" class="gold-divider mt-8 mb-8 opacity-0"></div>
 
                 <!-- Scroll indicator -->
-                <div class="mt-8" style="animation: fadeIn 1s ease-out 1.2s both">
+                <div id="scroll-hint" class="mt-8 opacity-0">
                     <a href="#story" class="inline-flex flex-col items-center text-white/30 hover:text-gold-300 transition-colors duration-300">
                         <span class="text-xs tracking-widest uppercase mb-2">Scroll</span>
                         <svg width="20" height="30" viewBox="0 0 20 30" class="animate-bounce">
@@ -703,17 +891,21 @@
                 </div>
 
                 <!-- Quote Banner -->
-                <div class="reveal-scale text-center py-12 px-8 rounded-2xl border border-gold-300/10 bg-gradient-to-r from-transparent via-gold-300/5 to-transparent">
-                    <p class="font-display italic text-2xl sm:text-3xl text-gold-300/80 mb-4">
+                <div class="reveal-scale text-center py-16 px-8 rounded-2xl border border-gold-300/10 bg-gradient-to-r from-transparent via-gold-300/5 to-transparent relative overflow-hidden glow-border">
+                    <span class="quote-mark" style="top: -20px; left: 20px;">"</span>
+                    <span class="quote-mark" style="bottom: -60px; right: 20px;">"</span>
+                    <p class="font-display italic text-2xl sm:text-3xl text-gold-300/80 mb-4 relative z-10">
                         "If you wanna make the world a better place,<br>take a look at yourself and make a change."
                     </p>
-                    <p class="text-white/30 text-sm">— Michael Jackson, Man In The Mirror</p>
+                    <p class="text-white/30 text-sm relative z-10">— Michael Jackson, Man In The Mirror</p>
                 </div>
             </div>
         </section>
 
-        <!-- Gold Divider -->
-        <div class="gold-divider"></div>
+        <!-- MJ Divider -->
+        <div class="mj-divider">
+            <span class="text-gold-300/20 text-2xl mx-6">♪ ♫ ♪</span>
+        </div>
 
         <!-- ====== VIDEOS SECTION ====== -->
         <section id="videos" class="relative py-24 sm:py-32 px-6 section-glow">
@@ -769,8 +961,10 @@
             </div>
         </section>
 
-        <!-- Gold Divider -->
-        <div class="gold-divider"></div>
+        <!-- MJ Divider -->
+        <div class="mj-divider">
+            <span class="text-gold-300/20 text-2xl mx-6">★ ♫ ★</span>
+        </div>
 
         <!-- ====== COMMENTS SECTION ====== -->
         <section id="kommentare" class="relative py-24 sm:py-32 px-6">
@@ -1042,17 +1236,154 @@
             // Create main particles
             createParticles('main-particles', 25);
 
-            // Scroll reveal observer
-            const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
-            const revealObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                    }
-                });
-            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+            // ===== GSAP ANIMATIONS =====
+            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+                gsap.registerPlugin(ScrollTrigger);
 
-            revealElements.forEach(el => revealObserver.observe(el));
+                // -- Scroll Progress Bar --
+                gsap.to('#scroll-progress', {
+                    scaleX: 1,
+                    ease: 'none',
+                    scrollTrigger: { trigger: 'body', start: 'top top', end: 'bottom bottom', scrub: 0.3 }
+                });
+
+                // -- Hero Entry Timeline --
+                var heroTL = gsap.timeline({ delay: 0.3 });
+                heroTL
+                    .to('#spotlight-l, #spotlight-r', { opacity: 0.8, duration: 1.5, ease: 'power2.out' })
+                    .to('#hero-label', { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, 0.2)
+                    .fromTo('#hero-name', { opacity: 0, scale: 0.5, rotationX: -45 },
+                        { opacity: 1, scale: 1, rotationX: 0, duration: 1.2, ease: 'back.out(1.4)' }, 0.4)
+                    .to('#hero-surname', { opacity: 1, duration: 0.8, ease: 'power2.out' }, 0.9)
+                    .to('#hero-subtitle', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 1.1)
+                    .to('#hero-quote', { opacity: 1, duration: 0.8, ease: 'power2.out' }, 1.4)
+                    .to('#hero-vinyl', { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.7)' }, 1.6)
+                    .to('#hero-divider', { opacity: 1, scaleX: 1, duration: 0.8, ease: 'power2.inOut' }, 1.8)
+                    .to('#scroll-hint', { opacity: 1, duration: 0.6 }, 2.0)
+                    .to('#mj-sil-left, #mj-sil-right', { opacity: 0.06, duration: 1.5, ease: 'power2.out' }, 0.8);
+
+                // -- Vinyl Spin on Scroll --
+                gsap.to('#vinyl-disc', {
+                    rotation: 720,
+                    ease: 'none',
+                    scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 }
+                });
+
+                // -- Hero Parallax — elements move at different speeds --
+                document.querySelectorAll('.float-element[data-speed]').forEach(function(el) {
+                    gsap.to(el, {
+                        yPercent: -100 * parseFloat(el.dataset.speed),
+                        ease: 'none',
+                        scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
+                    });
+                });
+
+                // -- MJ Silhouettes Parallax --
+                gsap.to('#mj-sil-left', {
+                    yPercent: -30, ease: 'none',
+                    scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
+                });
+                gsap.to('#mj-sil-right', {
+                    yPercent: -50, ease: 'none',
+                    scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
+                });
+
+                // -- Spotlight Beams follow scroll --
+                gsap.to('#spotlight-l', {
+                    rotation: -15, yPercent: 20, ease: 'none',
+                    scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
+                });
+                gsap.to('#spotlight-r', {
+                    rotation: 15, yPercent: 20, ease: 'none',
+                    scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
+                });
+
+                // -- Section Headers: dramatic clip-path reveal --
+                gsap.utils.toArray('section h2').forEach(function(h2) {
+                    gsap.from(h2, {
+                        clipPath: 'inset(100% 0% 0% 0%)',
+                        opacity: 0,
+                        duration: 1.2,
+                        ease: 'power4.inOut',
+                        scrollTrigger: { trigger: h2, start: 'top 85%' }
+                    });
+                });
+
+                // -- Story text blocks: slide in --
+                gsap.utils.toArray('.reveal-left').forEach(function(el) {
+                    gsap.from(el, {
+                        x: -80, opacity: 0, duration: 1, ease: 'power3.out',
+                        scrollTrigger: { trigger: el, start: 'top 85%' }
+                    });
+                });
+                gsap.utils.toArray('.reveal-right').forEach(function(el) {
+                    gsap.from(el, {
+                        x: 80, opacity: 0, duration: 1, ease: 'power3.out',
+                        scrollTrigger: { trigger: el, start: 'top 85%' }
+                    });
+                });
+
+                // -- Video Cards: stagger slide up --
+                ScrollTrigger.batch('.video-card', {
+                    onEnter: function(elements) {
+                        gsap.from(elements, {
+                            opacity: 0, y: 60, scale: 0.95, stagger: 0.2, duration: 0.8, ease: 'power3.out'
+                        });
+                    },
+                    start: 'top 85%'
+                });
+
+                // -- Quote Banner: scale up on scroll --
+                gsap.from('.reveal-scale', {
+                    scale: 0.85, opacity: 0, duration: 1.2, ease: 'power2.out',
+                    scrollTrigger: { trigger: '.reveal-scale', start: 'top 85%' }
+                });
+
+                // -- Comment Bubbles: stagger on enter --
+                ScrollTrigger.batch('.comment-bubble', {
+                    onEnter: function(elements) {
+                        gsap.from(elements, {
+                            opacity: 0, y: 30, stagger: 0.08, duration: 0.5, ease: 'power2.out'
+                        });
+                    },
+                    start: 'top 90%'
+                });
+
+                // -- MJ Dividers: music notes pulse --
+                gsap.utils.toArray('.mj-divider span').forEach(function(span) {
+                    gsap.from(span, {
+                        scale: 0, opacity: 0, duration: 0.8, ease: 'back.out(2)',
+                        scrollTrigger: { trigger: span, start: 'top 90%' }
+                    });
+                });
+
+                // -- Footer: fade in from bottom --
+                gsap.from('footer', {
+                    opacity: 0, y: 40, duration: 1, ease: 'power2.out',
+                    scrollTrigger: { trigger: 'footer', start: 'top 95%' }
+                });
+
+                // -- Parallax background glow on sections --
+                gsap.utils.toArray('.section-glow').forEach(function(section) {
+                    gsap.to(section, {
+                        backgroundPosition: '50% 30%',
+                        ease: 'none',
+                        scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: true }
+                    });
+                });
+
+            } else {
+                // Fallback: simple IntersectionObserver if GSAP not loaded
+                var revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+                var revealObserver = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) entry.target.classList.add('active');
+                    });
+                }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+                revealElements.forEach(function(el) { revealObserver.observe(el); });
+            }
+
+            // ===== ORIGINAL FUNCTIONALITY =====
 
             // Active nav link on scroll
             const sections = document.querySelectorAll('section[id]');
