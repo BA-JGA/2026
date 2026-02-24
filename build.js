@@ -193,10 +193,16 @@ ${headContent}
             try {
                 var a = new Audio('assets/intro.mp3'); a.volume = 0.5; a.play();
                 setTimeout(function() { a.pause(); }, 3000);
-                var resumed = false;
-                window.addEventListener('scroll', function() {
-                    if (!resumed && a.paused) { resumed = true; a.play(); }
-                }, { once: true });
+                var videosEl = document.getElementById('videos');
+                if (videosEl) {
+                    var audioObserver = new IntersectionObserver(function(entries) {
+                        if (entries[0].isIntersecting && a.paused) {
+                            a.play();
+                            audioObserver.disconnect();
+                        }
+                    }, { threshold: 0.2 });
+                    audioObserver.observe(videosEl);
+                }
             } catch(e) {}
         }
 
