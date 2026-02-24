@@ -744,6 +744,56 @@
         }
         .line-reveal.active { width: 100%; }
 
+        /* ===== DONUT CHART ===== */
+        .donut-chart {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            position: relative;
+            background: conic-gradient(
+                #FFD700 0deg, #FFD700 0deg,
+                rgba(239,68,68,0.6) 0deg, rgba(239,68,68,0.6) 360deg
+            );
+            transition: background 1.5s ease-out;
+        }
+        .donut-chart.active {
+            background: conic-gradient(
+                #FFD700 0deg, #FFD700 253.9deg,
+                rgba(239,68,68,0.6) 253.9deg, rgba(239,68,68,0.6) 360deg
+            );
+        }
+        .donut-chart::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #0a0a0a;
+        }
+        .donut-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            text-align: center;
+        }
+        .donut-legend {
+            display: flex;
+            flex-col: column;
+            gap: 8px;
+        }
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
         /* ===== AUDIO EQUALIZER BARS ===== */
         .equalizer {
             display: flex;
@@ -1253,23 +1303,64 @@
                     </div>
                 </div>
 
-                <!-- Fun Stats Counter -->
-                <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
-                    <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift">
-                        <p class="font-display text-3xl sm:text-4xl font-bold text-gold-gradient counter-number" data-target="12">0</p>
-                        <p class="text-white/30 text-sm mt-2">Beste Freunde</p>
+                <!-- Babaks Statistiken -->
+                <div class="reveal mb-20">
+                    <p class="text-gold-400 text-sm tracking-[0.3em] uppercase mb-8 font-medium text-center">Babaks Lebensbilanz</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+                        <!-- Stat 1: Geschlechtskrankheiten -->
+                        <div class="text-center p-8 rounded-2xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift flex flex-col justify-center">
+                            <p class="text-5xl mb-3">🦠</p>
+                            <p class="font-display text-4xl sm:text-5xl font-bold text-gold-gradient counter-number" data-target="7">0</p>
+                            <p class="text-white/40 text-sm mt-3 leading-snug">Geschlechtskrankheiten<br><span class="text-white/20 text-xs">(bestätigt)</span></p>
+                        </div>
+
+                        <!-- Stat 2: Bahndamm-Besuche + Donut Chart -->
+                        <div class="md:col-span-2 p-8 rounded-2xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift">
+                            <div class="flex flex-col sm:flex-row items-center gap-8">
+                                <!-- Zahl -->
+                                <div class="text-center sm:text-left flex-shrink-0">
+                                    <p class="text-4xl mb-2">🚂</p>
+                                    <p class="font-display text-4xl sm:text-5xl font-bold text-gold-gradient counter-number" data-target="112">0</p>
+                                    <p class="text-white/40 text-sm mt-2">Bahndamm-Besuche</p>
+                                    <p class="text-white/20 text-xs mt-1 italic">"Ich geh nur spazieren"</p>
+                                </div>
+
+                                <!-- Donut Chart -->
+                                <div class="flex flex-col items-center gap-4 flex-1">
+                                    <div class="donut-chart" id="bahndamm-chart">
+                                        <div class="donut-center">
+                                            <p class="font-display text-2xl font-bold text-gold-gradient counter-number" data-target="70" data-suffix="%">0</p>
+                                            <p class="text-white/30 text-[10px]">Erfolg</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Legende -->
+                                    <div class="flex flex-col gap-2 text-left">
+                                        <div class="flex items-center gap-2">
+                                            <span class="legend-dot" style="background:#FFD700;"></span>
+                                            <span class="text-white/50 text-xs"><span class="text-gold-300 font-semibold counter-number" data-target="79">0</span> Erfolgreich</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="legend-dot" style="background:rgba(239,68,68,0.6);"></span>
+                                            <span class="text-white/50 text-xs"><span class="text-red-400/80 font-semibold counter-number" data-target="33">0</span> Ablehnung durch Prostituierte</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift">
-                        <p class="font-display text-3xl sm:text-4xl font-bold text-gold-gradient counter-number" data-target="1">0</p>
-                        <p class="text-white/30 text-sm mt-2">King of Pop</p>
-                    </div>
-                    <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift">
-                        <p class="font-display text-3xl sm:text-4xl font-bold text-gold-gradient counter-number" data-target="2026">0</p>
-                        <p class="text-white/30 text-sm mt-2">Das Jahr</p>
-                    </div>
-                    <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift">
-                        <p class="font-display text-3xl sm:text-4xl font-bold text-gold-gradient counter-number" data-target="100" data-suffix="%">0</p>
-                        <p class="text-white/30 text-sm mt-2">Unvergesslich</p>
+
+                    <!-- Zweite Reihe: Jahr + Unvergesslich -->
+                    <div class="grid grid-cols-2 gap-6 mt-6">
+                        <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift">
+                            <p class="font-display text-3xl sm:text-4xl font-bold text-gold-gradient counter-number" data-target="2026">0</p>
+                            <p class="text-white/30 text-sm mt-2">Das Jahr</p>
+                        </div>
+                        <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift">
+                            <p class="font-display text-3xl sm:text-4xl font-bold text-gold-gradient counter-number" data-target="100" data-suffix="%">0</p>
+                            <p class="text-white/30 text-sm mt-2">Unvergesslich</p>
+                        </div>
                     </div>
                 </div>
 
@@ -1804,6 +1895,18 @@
                     });
                 }, { threshold: 0.3 });
                 counterObserver.observe(counterSection.parentElement.parentElement);
+            }
+
+            // ===== DONUT CHART OBSERVER =====
+            var donutChart = document.getElementById('bahndamm-chart');
+            if (donutChart) {
+                var donutObserver = new IntersectionObserver(function(entries) {
+                    if (entries[0].isIntersecting) {
+                        donutChart.classList.add('active');
+                        donutObserver.disconnect();
+                    }
+                }, { threshold: 0.3 });
+                donutObserver.observe(donutChart);
             }
 
             // ===== CONFETTI ON COMMENT SUBMIT =====
