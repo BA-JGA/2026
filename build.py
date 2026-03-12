@@ -317,11 +317,30 @@ def build_encrypted_page(encrypted_data: dict, original_html: str) -> str:
         var crtScanlines = document.getElementById('crt-scanlines');
         if (crtPower && window.innerWidth >= 1024) {{
             var crtIsOn = true;
+            var crtBusy = false;
             crtPower.addEventListener('click', function() {{
-                crtIsOn = !crtIsOn;
-                crtOff.classList.toggle('off', !crtIsOn);
-                crtFrame.classList.toggle('off', !crtIsOn);
-                if (crtScanlines) crtScanlines.style.display = crtIsOn ? '' : 'none';
+                if (crtBusy) return;
+                if (crtIsOn) {{
+                    crtIsOn = false;
+                    crtOff.classList.add('off');
+                    crtFrame.classList.add('off');
+                    if (crtScanlines) crtScanlines.style.display = 'none';
+                }} else {{
+                    crtBusy = true;
+                    crtFrame.classList.remove('off');
+                    crtOff.classList.remove('off');
+                    crtOff.classList.add('turning-on');
+                    setTimeout(function() {{
+                        crtOff.classList.remove('turning-on');
+                        crtOff.classList.add('crt-flicker');
+                        setTimeout(function() {{
+                            crtOff.classList.remove('crt-flicker');
+                            if (crtScanlines) crtScanlines.style.display = '';
+                            crtIsOn = true;
+                            crtBusy = false;
+                        }}, 600);
+                    }}, 400);
+                }}
             }});
         }}
     }})();

@@ -1285,6 +1285,7 @@
             #crt-off-overlay.off {
                 opacity: 1;
             }
+            /* Abschalt-Effekt: Linie schrumpft zum Punkt */
             #crt-off-overlay.off::after {
                 content: '';
                 position: absolute;
@@ -1300,6 +1301,43 @@
                 0% { left: 5%; right: 5%; height: 3px; opacity: 1; }
                 70% { left: 30%; right: 30%; height: 2px; opacity: 0.8; }
                 100% { left: 48%; right: 48%; height: 1px; opacity: 0.3; }
+            }
+
+            /* Einschalt-Effekt: Punkt expandiert, Flackern, Aufblende */
+            #crt-off-overlay.turning-on {
+                opacity: 1;
+                background: #000;
+            }
+            #crt-off-overlay.turning-on::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 48%;
+                right: 48%;
+                height: 1px;
+                background: rgba(255,255,255,0.9);
+                box-shadow: 0 0 30px rgba(255,255,255,0.6), 0 0 80px rgba(255,255,255,0.3);
+                animation: crt-line-expand 0.4s ease-out forwards;
+            }
+            @keyframes crt-line-expand {
+                0% { left: 49%; right: 49%; height: 1px; opacity: 0.5; }
+                40% { left: 20%; right: 20%; height: 2px; opacity: 1; }
+                100% { left: 0; right: 0; height: 100%; opacity: 1; }
+            }
+            /* Flacker-Phase nach der Linie */
+            #crt-off-overlay.crt-flicker {
+                animation: crt-boot-flicker 0.6s steps(4) forwards;
+                background: #000;
+            }
+            #crt-off-overlay.crt-flicker::after { display: none; }
+            @keyframes crt-boot-flicker {
+                0% { opacity: 1; }
+                20% { opacity: 0.6; }
+                35% { opacity: 0.9; }
+                50% { opacity: 0.3; }
+                65% { opacity: 0.7; }
+                80% { opacity: 0.1; }
+                100% { opacity: 0; }
             }
 
             /* Frame wechselt PNG wenn Monitor aus */
@@ -3154,11 +3192,32 @@
         var crtScanlines = document.getElementById('crt-scanlines');
         if (crtPower && window.innerWidth >= 1024) {
             var crtIsOn = true;
+            var crtBusy = false;
             crtPower.addEventListener('click', function() {
-                crtIsOn = !crtIsOn;
-                crtOff.classList.toggle('off', !crtIsOn);
-                crtFrame.classList.toggle('off', !crtIsOn);
-                if (crtScanlines) crtScanlines.style.display = crtIsOn ? '' : 'none';
+                if (crtBusy) return;
+                if (crtIsOn) {
+                    /* --- Ausschalten --- */
+                    crtIsOn = false;
+                    crtOff.classList.add('off');
+                    crtFrame.classList.add('off');
+                    if (crtScanlines) crtScanlines.style.display = 'none';
+                } else {
+                    /* --- Einschalten: Punkt > Linie > Flackern > An --- */
+                    crtBusy = true;
+                    crtFrame.classList.remove('off');
+                    crtOff.classList.remove('off');
+                    crtOff.classList.add('turning-on');
+                    setTimeout(function() {
+                        crtOff.classList.remove('turning-on');
+                        crtOff.classList.add('crt-flicker');
+                        setTimeout(function() {
+                            crtOff.classList.remove('crt-flicker');
+                            if (crtScanlines) crtScanlines.style.display = '';
+                            crtIsOn = true;
+                            crtBusy = false;
+                        }, 600);
+                    }, 400);
+                }
             });
         }
     })();
