@@ -553,6 +553,166 @@
             to { transform: rotate(360deg); }
         }
 
+        /* ── MJ Vinyl Jukebox ── */
+        .jukebox-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 20px;
+            padding: 0 24px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .jukebox-row::-webkit-scrollbar { display: none; }
+        .jukebox-disc {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            flex-shrink: 0;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+            touch-action: manipulation;
+        }
+        .jukebox-vinyl {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 50% 50%, #111 0%, #111 18%, transparent 18.5%),
+                radial-gradient(circle at 50% 50%, #222 18.5%, #222 19.5%, transparent 20%),
+                repeating-radial-gradient(circle at 50% 50%, transparent 20%, transparent 22%, rgba(40,40,40,0.6) 22.5%, transparent 23%),
+                repeating-radial-gradient(circle at 50% 50%, transparent 25%, transparent 27%, rgba(50,50,50,0.4) 27.5%, transparent 28%),
+                repeating-radial-gradient(circle at 50% 50%, transparent 30%, transparent 33%, rgba(40,40,40,0.5) 33.5%, transparent 34%),
+                repeating-radial-gradient(circle at 50% 50%, transparent 36%, transparent 39%, rgba(45,45,45,0.4) 39.5%, transparent 40%),
+                repeating-radial-gradient(circle at 50% 50%, transparent 42%, transparent 45%, rgba(35,35,35,0.5) 45.5%, transparent 46%),
+                conic-gradient(from 0deg, #0d0d0d, #1a1a1a 10%, #0f0f0f 20%, #1c1c1c 30%, #0d0d0d 40%, #1a1a1a 50%, #0f0f0f 60%, #1c1c1c 70%, #0d0d0d 80%, #1a1a1a 90%, #0d0d0d);
+            border: 2px solid rgba(255,215,0,0.2);
+            position: relative;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.6);
+        }
+        .jukebox-vinyl::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #333 30%, #1a1a1a 70%);
+            border: 2px solid rgba(255,215,0,0.3);
+            z-index: 1;
+        }
+        .jukebox-vinyl::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #FFD700;
+            z-index: 2;
+        }
+        .jukebox-disc:hover .jukebox-vinyl,
+        .jukebox-disc:active .jukebox-vinyl {
+            border-color: rgba(255,215,0,0.5);
+            box-shadow: 0 0 20px rgba(255,215,0,0.15), 0 2px 12px rgba(0,0,0,0.6);
+        }
+        .jukebox-disc.playing .jukebox-vinyl {
+            animation: spin-vinyl 1.8s linear infinite;
+            border-color: rgba(255,215,0,0.6);
+            box-shadow: 0 0 28px rgba(255,215,0,0.25), 0 2px 12px rgba(0,0,0,0.6);
+        }
+        .jukebox-title {
+            font-size: 10px;
+            color: rgba(255,255,255,0.4);
+            text-align: center;
+            max-width: 76px;
+            line-height: 1.25;
+            transition: color 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+        .jukebox-disc.playing .jukebox-title {
+            color: #FFD700;
+        }
+        .jukebox-now-playing {
+            font-size: 8px;
+            color: #FFD700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            height: 12px;
+            font-family: 'Inter', sans-serif;
+        }
+        .jukebox-disc.playing .jukebox-now-playing {
+            opacity: 1;
+            animation: pulse-text 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-text {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        .jukebox-pause-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,215,0,0.3);
+            background: rgba(255,215,0,0.06);
+            color: #FFD700;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-self: center;
+            flex-shrink: 0;
+            transition: background 0.3s, border-color 0.3s, transform 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        .jukebox-pause-btn:hover,
+        .jukebox-pause-btn:active {
+            background: rgba(255,215,0,0.14);
+            border-color: rgba(255,215,0,0.5);
+            transform: scale(1.1);
+        }
+        /* YouTube player offscreen but renderable */
+        .yt-player-hidden {
+            position: fixed;
+            left: -9999px;
+            top: -9999px;
+            width: 160px;
+            height: 90px;
+            opacity: 0;
+            pointer-events: none;
+        }
+        @media (max-width: 639px) {
+            .jukebox-row {
+                justify-content: flex-start;
+                gap: 14px;
+                padding: 0 20px;
+                scroll-snap-type: x mandatory;
+            }
+            .jukebox-disc {
+                scroll-snap-align: center;
+            }
+            .jukebox-vinyl { width: 62px; height: 62px; }
+            .jukebox-vinyl::before { width: 24px; height: 24px; }
+            .jukebox-vinyl::after { width: 8px; height: 8px; }
+            .jukebox-title { font-size: 9px; max-width: 66px; }
+            .jukebox-pause-btn { width: 44px; height: 44px; font-size: 18px; }
+        }
+
         /* Section divider with MJ flair */
         .mj-divider {
             position: relative;
@@ -977,6 +1137,7 @@
         input, textarea { -webkit-user-select: auto; user-select: auto; }
         @media print { body { display: none !important; } }
     </style>
+    <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
     <script>
@@ -1254,6 +1415,43 @@
                 <p id="hero-quote" class="font-display italic text-gold-400/60 text-base sm:text-lg mt-8" style="animation: fadeInUp 0.8s ease-out 0.8s both">
                     "Don't stop 'til you get enough"
                 </p>
+
+                <!-- MJ Vinyl Jukebox -->
+                <div id="jukebox" class="jukebox-row mt-8" style="animation: fadeInUp 0.8s ease-out 0.9s both">
+                    <button class="jukebox-disc" data-yt="HzZ_urpj4As">
+                        <div class="jukebox-vinyl"></div>
+                        <span class="jukebox-title">The Way You Make Me Feel</span>
+                        <span class="jukebox-now-playing">Now Playing</span>
+                    </button>
+                    <button class="jukebox-disc" data-yt="Zi_XLOBDo_Y">
+                        <div class="jukebox-vinyl"></div>
+                        <span class="jukebox-title">Billie Jean</span>
+                        <span class="jukebox-now-playing">Now Playing</span>
+                    </button>
+                    <button class="jukebox-disc" data-yt="QNJL6nfu__Q">
+                        <div class="jukebox-vinyl"></div>
+                        <span class="jukebox-title">They Don't Care About Us</span>
+                        <span class="jukebox-now-playing">Now Playing</span>
+                    </button>
+                    <button class="jukebox-disc" data-yt="oRdxUFDoQe0">
+                        <div class="jukebox-vinyl"></div>
+                        <span class="jukebox-title">Beat It</span>
+                        <span class="jukebox-now-playing">Now Playing</span>
+                    </button>
+                    <button class="jukebox-disc" data-yt="h_D3VFfhvs4">
+                        <div class="jukebox-vinyl"></div>
+                        <span class="jukebox-title">Smooth Criminal</span>
+                        <span class="jukebox-now-playing">Now Playing</span>
+                    </button>
+                    <button class="jukebox-disc" data-yt="sOnqjkJTMaA">
+                        <div class="jukebox-vinyl"></div>
+                        <span class="jukebox-title">Thriller</span>
+                        <span class="jukebox-now-playing">Now Playing</span>
+                    </button>
+                    <button id="jukebox-pause" class="jukebox-pause-btn" title="Pause/Play" style="display:none;">⏸</button>
+                </div>
+                <!-- Hidden YouTube Player (offscreen, needs real dimensions for mobile) -->
+                <div id="yt-player" class="yt-player-hidden"></div>
 
                 <!-- Vinyl Record + Equalizer -->
                 <div id="hero-vinyl" class="flex items-center justify-center gap-6 mt-10" style="animation: fadeInUp 0.8s ease-out 1s both">
@@ -1857,7 +2055,7 @@
                 return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
             }
 
-            const CORRECT_HASH = '7c0da27eb748a30dbee03550e5b5cd651e2a4e25e34e2860eebd21e4e9a3be71';
+            const CORRECT_HASH = '3461151a3558a68f485f6e41ca15f304a32c6a4a869b494f58e4f609c5cf20fa';
 
             async function tryUnlock() {
                 const pw = passwordInput.value;
@@ -1895,13 +2093,15 @@
                         }, 600);
 
                         try {
-                            var a = new Audio('assets/intro.mp3'); a.volume = 0.5; a.play();
-                            setTimeout(function() { a.pause(); }, 3000);
+                            window._introAudio = new Audio('assets/intro.mp3');
+                            window._introAudio.volume = 0.5;
+                            window._introAudio.play();
+                            setTimeout(function() { window._introAudio.pause(); }, 3000);
                             var videosEl = document.getElementById('videos');
                             if (videosEl) {
                                 var audioObserver = new IntersectionObserver(function(entries) {
-                                    if (entries[0].isIntersecting && a.paused) {
-                                        a.play();
+                                    if (entries[0].isIntersecting && window._introAudio.paused && !window._jukeboxActive) {
+                                        window._introAudio.play();
                                         audioObserver.disconnect();
                                     }
                                 }, { threshold: 0.2 });
@@ -2332,6 +2532,123 @@
 
             // GSAP enhances on top of CSS baseline
             initGSAP();
+
+            // ===== MJ VINYL JUKEBOX =====
+            (function initJukebox() {
+                var ytPlayer = null;
+                var playerReady = false;
+                var currentDisc = null;
+                var isPlaying = false;
+                var pendingVideoId = null;
+                var pauseBtn = document.getElementById('jukebox-pause');
+                var discs = document.querySelectorAll('.jukebox-disc');
+
+                function createPlayer() {
+                    if (typeof YT === 'undefined' || !YT.Player) {
+                        setTimeout(createPlayer, 200);
+                        return;
+                    }
+                    ytPlayer = new YT.Player('yt-player', {
+                        height: '90',
+                        width: '160',
+                        playerVars: {
+                            autoplay: 0,
+                            controls: 0,
+                            disablekb: 1,
+                            fs: 0,
+                            modestbranding: 1,
+                            rel: 0,
+                            showinfo: 0,
+                            playsinline: 1
+                        },
+                        events: {
+                            onReady: function() {
+                                playerReady = true;
+                                if (pendingVideoId) {
+                                    ytPlayer.loadVideoById(pendingVideoId);
+                                    ytPlayer.setVolume(70);
+                                    pendingVideoId = null;
+                                }
+                            },
+                            onStateChange: function(e) {
+                                if (e.data === 0 && isPlaying) {
+                                    discs.forEach(function(d) { d.classList.remove('playing'); });
+                                    currentDisc = null;
+                                    isPlaying = false;
+                                    if (pauseBtn) pauseBtn.style.display = 'none';
+                                }
+                            },
+                            onError: function() {
+                                // Video unavailable — keep disc spinning, try anyway
+                            }
+                        }
+                    });
+                }
+                createPlayer();
+
+                function stopIntroAudio() {
+                    if (window._introAudio) {
+                        window._introAudio.pause();
+                        window._introAudio.currentTime = 0;
+                    }
+                    window._jukeboxActive = true;
+                }
+
+                function playDisc(disc) {
+                    var videoId = disc.dataset.yt;
+                    stopIntroAudio();
+
+                    // Same disc → toggle off
+                    if (currentDisc === disc && isPlaying) {
+                        if (ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
+                        discs.forEach(function(d) { d.classList.remove('playing'); });
+                        currentDisc = null;
+                        isPlaying = false;
+                        if (pauseBtn) pauseBtn.style.display = 'none';
+                        return;
+                    }
+
+                    // Switch disc
+                    discs.forEach(function(d) { d.classList.remove('playing'); });
+                    disc.classList.add('playing');
+                    currentDisc = disc;
+                    isPlaying = true;
+                    if (pauseBtn) { pauseBtn.style.display = 'flex'; pauseBtn.textContent = '⏸'; }
+
+                    if (playerReady && ytPlayer && ytPlayer.loadVideoById) {
+                        ytPlayer.loadVideoById(videoId);
+                        ytPlayer.setVolume(70);
+                    } else {
+                        pendingVideoId = videoId;
+                    }
+                }
+
+                discs.forEach(function(disc) {
+                    disc.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        playDisc(disc);
+                    });
+                });
+
+                if (pauseBtn) {
+                    pauseBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (!ytPlayer || !playerReady) return;
+                        var state = ytPlayer.getPlayerState();
+                        if (state === 1) {
+                            ytPlayer.pauseVideo();
+                            isPlaying = false;
+                            pauseBtn.textContent = '▶';
+                            if (currentDisc) currentDisc.classList.remove('playing');
+                        } else {
+                            ytPlayer.playVideo();
+                            isPlaying = true;
+                            pauseBtn.textContent = '⏸';
+                            if (currentDisc) currentDisc.classList.add('playing');
+                        }
+                    });
+                }
+            })();
 
             // ===== ORIGINAL FUNCTIONALITY =====
 
