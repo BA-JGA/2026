@@ -1281,6 +1281,7 @@
                 opacity: 0;
                 pointer-events: none;
                 transition: opacity 0.3s ease;
+                overflow: hidden;
             }
             #crt-off-overlay.off {
                 opacity: 1;
@@ -1312,17 +1313,17 @@
                 content: '';
                 position: absolute;
                 top: 50%;
+                bottom: 50%;
                 left: 48%;
                 right: 48%;
-                height: 1px;
                 background: rgba(255,255,255,0.9);
                 box-shadow: 0 0 30px rgba(255,255,255,0.6), 0 0 80px rgba(255,255,255,0.3);
                 animation: crt-line-expand 0.4s ease-out forwards;
             }
             @keyframes crt-line-expand {
-                0% { left: 49%; right: 49%; height: 1px; opacity: 0.5; }
-                40% { left: 20%; right: 20%; height: 2px; opacity: 1; }
-                100% { left: 0; right: 0; height: 100%; opacity: 1; }
+                0% { left: 49%; right: 49%; top: 50%; bottom: 50%; opacity: 0.5; }
+                40% { left: 20%; right: 20%; top: 49%; bottom: 49%; opacity: 1; }
+                100% { left: 0; right: 0; top: 0; bottom: 0; opacity: 1; }
             }
             /* Flacker-Phase nach der Linie */
             #crt-off-overlay.crt-flicker {
