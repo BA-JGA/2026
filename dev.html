@@ -662,19 +662,26 @@
             0%, 100% { opacity: 0.6; }
             50% { opacity: 1; }
         }
+        .jukebox-controls {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .jukebox-controls.visible { display: flex; }
         .jukebox-pause-btn {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             border: 1px solid rgba(255,215,0,0.3);
             background: rgba(255,215,0,0.06);
             color: #FFD700;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            align-self: center;
             flex-shrink: 0;
             transition: background 0.3s, border-color 0.3s, transform 0.2s;
             -webkit-tap-highlight-color: transparent;
@@ -686,15 +693,59 @@
             border-color: rgba(255,215,0,0.5);
             transform: scale(1.1);
         }
-        /* YouTube player offscreen but renderable */
+        .jukebox-vol {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .jukebox-vol-icon {
+            font-size: 12px;
+            color: rgba(255,215,0,0.5);
+            flex-shrink: 0;
+        }
+        .jukebox-vol-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 80px;
+            height: 3px;
+            border-radius: 2px;
+            background: rgba(255,215,0,0.15);
+            outline: none;
+            cursor: pointer;
+        }
+        .jukebox-vol-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #FFD700;
+            cursor: pointer;
+            box-shadow: 0 0 6px rgba(255,215,0,0.3);
+        }
+        .jukebox-vol-slider::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #FFD700;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 6px rgba(255,215,0,0.3);
+        }
+        .jukebox-vol-slider::-moz-range-track {
+            height: 3px;
+            border-radius: 2px;
+            background: rgba(255,215,0,0.15);
+        }
+        /* YouTube player: visible to iOS but hidden from user */
         .yt-player-hidden {
-            position: fixed;
-            left: -9999px;
-            top: -9999px;
-            width: 160px;
-            height: 90px;
-            opacity: 0;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            opacity: 0.01;
             pointer-events: none;
+            position: absolute;
+            z-index: -1;
         }
         @media (max-width: 639px) {
             .jukebox-row {
@@ -710,7 +761,9 @@
             .jukebox-vinyl::before { width: 24px; height: 24px; }
             .jukebox-vinyl::after { width: 8px; height: 8px; }
             .jukebox-title { font-size: 9px; max-width: 66px; }
-            .jukebox-pause-btn { width: 44px; height: 44px; font-size: 18px; }
+            .jukebox-pause-btn { width: 40px; height: 40px; font-size: 16px; }
+            .jukebox-vol-slider { width: 70px; }
+            .jukebox-controls { gap: 10px; }
         }
 
         /* Section divider with MJ flair */
@@ -1137,7 +1190,6 @@
         input, textarea { -webkit-user-select: auto; user-select: auto; }
         @media print { body { display: none !important; } }
     </style>
-    <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
     <script>
@@ -1454,7 +1506,13 @@
                         <span class="jukebox-title">Thriller</span>
                         <span class="jukebox-now-playing">Now Playing</span>
                     </button>
-                    <button id="jukebox-pause" class="jukebox-pause-btn" title="Pause/Play" style="display:none;">⏸</button>
+                </div>
+                <div id="jukebox-controls" class="jukebox-controls">
+                    <button id="jukebox-pause" class="jukebox-pause-btn" title="Pause/Play">⏸</button>
+                    <div class="jukebox-vol">
+                        <span class="jukebox-vol-icon">🔈</span>
+                        <input type="range" id="jukebox-vol" class="jukebox-vol-slider" min="0" max="100" value="70" title="Lautstärke">
+                    </div>
                 </div>
                 <!-- Hidden YouTube Player (offscreen, needs real dimensions for mobile) -->
                 <div id="yt-player" class="yt-player-hidden"></div>
@@ -2558,52 +2616,81 @@
                 var playerReady = false;
                 var currentDisc = null;
                 var isPlaying = false;
+                var isPaused = false;
+                var hasStartedPlaying = false;
                 var pendingVideoId = null;
+                var currentVideoId = null;
+                var volume = 70;
                 var pauseBtn = document.getElementById('jukebox-pause');
+                var controlsEl = document.getElementById('jukebox-controls');
+                var volSlider = document.getElementById('jukebox-vol');
                 var discs = document.querySelectorAll('.jukebox-disc');
+                if (!discs.length) return;
+
+                function showControls() { if (controlsEl) controlsEl.classList.add('visible'); }
+                function hideControls() { if (controlsEl) controlsEl.classList.remove('visible'); }
+
+                // Dynamically load YouTube IFrame API
+                function loadYTApi() {
+                    if (window.YT && window.YT.Player) { createPlayer(); return; }
+                    var tag = document.createElement('script');
+                    tag.src = 'https://www.youtube.com/iframe_api';
+                    document.head.appendChild(tag);
+                    window.onYouTubeIframeAPIReady = function() { createPlayer(); };
+                }
 
                 function createPlayer() {
-                    if (typeof YT === 'undefined' || !YT.Player) {
-                        setTimeout(createPlayer, 200);
-                        return;
-                    }
+                    if (typeof YT === 'undefined' || !YT.Player) return;
                     ytPlayer = new YT.Player('yt-player', {
-                        height: '90',
-                        width: '160',
+                        height: '200',
+                        width: '200',
                         playerVars: {
-                            autoplay: 0,
-                            controls: 0,
-                            disablekb: 1,
-                            fs: 0,
-                            modestbranding: 1,
-                            rel: 0,
-                            showinfo: 0,
-                            playsinline: 1
+                            autoplay: 0, controls: 0, disablekb: 1, fs: 0,
+                            modestbranding: 1, rel: 0, showinfo: 0,
+                            playsinline: 1, origin: window.location.origin
                         },
                         events: {
                             onReady: function() {
                                 playerReady = true;
+                                ytPlayer.setVolume(volume);
                                 if (pendingVideoId) {
                                     ytPlayer.loadVideoById(pendingVideoId);
-                                    ytPlayer.setVolume(70);
                                     pendingVideoId = null;
                                 }
                             },
                             onStateChange: function(e) {
-                                if (e.data === 0 && isPlaying) {
+                                // 1 = playing
+                                if (e.data === 1) {
+                                    hasStartedPlaying = true;
+                                    isPlaying = true;
+                                    isPaused = false;
+                                    if (currentDisc) currentDisc.classList.add('playing');
+                                    if (pauseBtn) pauseBtn.textContent = '⏸';
+                                }
+                                // 2 = paused
+                                if (e.data === 2) {
+                                    isPlaying = false;
+                                    isPaused = true;
+                                    if (currentDisc) currentDisc.classList.remove('playing');
+                                    if (pauseBtn) pauseBtn.textContent = '▶';
+                                }
+                                // 0 = ended — only if it actually played
+                                if (e.data === 0 && hasStartedPlaying) {
                                     discs.forEach(function(d) { d.classList.remove('playing'); });
                                     currentDisc = null;
+                                    currentVideoId = null;
                                     isPlaying = false;
-                                    if (pauseBtn) pauseBtn.style.display = 'none';
+                                    isPaused = false;
+                                    hasStartedPlaying = false;
+                                    hideControls();
                                 }
                             },
-                            onError: function() {
-                                // Video unavailable — keep disc spinning, try anyway
-                            }
+                            onError: function() {}
                         }
                     });
                 }
-                createPlayer();
+
+                loadYTApi();
 
                 function stopIntroAudio() {
                     if (window._introAudio) {
@@ -2617,26 +2704,30 @@
                     var videoId = disc.dataset.yt;
                     stopIntroAudio();
 
-                    // Same disc → toggle off
-                    if (currentDisc === disc && isPlaying) {
-                        if (ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
-                        discs.forEach(function(d) { d.classList.remove('playing'); });
-                        currentDisc = null;
-                        isPlaying = false;
-                        if (pauseBtn) pauseBtn.style.display = 'none';
+                    // Same disc: toggle pause/resume
+                    if (currentDisc === disc) {
+                        if (isPlaying) {
+                            if (ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
+                        } else {
+                            if (ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
+                        }
                         return;
                     }
 
-                    // Switch disc
+                    // Different disc: switch song
+                    hasStartedPlaying = false;
                     discs.forEach(function(d) { d.classList.remove('playing'); });
                     disc.classList.add('playing');
                     currentDisc = disc;
+                    currentVideoId = videoId;
                     isPlaying = true;
-                    if (pauseBtn) { pauseBtn.style.display = 'flex'; pauseBtn.textContent = '⏸'; }
+                    isPaused = false;
+                    showControls();
+                    if (pauseBtn) pauseBtn.textContent = '⏸';
 
                     if (playerReady && ytPlayer && ytPlayer.loadVideoById) {
                         ytPlayer.loadVideoById(videoId);
-                        ytPlayer.setVolume(70);
+                        ytPlayer.setVolume(volume);
                     } else {
                         pendingVideoId = videoId;
                     }
@@ -2649,21 +2740,25 @@
                     });
                 });
 
+                // Pause/Play button
                 if (pauseBtn) {
                     pauseBtn.addEventListener('click', function(e) {
                         e.preventDefault();
                         if (!ytPlayer || !playerReady) return;
-                        var state = ytPlayer.getPlayerState();
-                        if (state === 1) {
+                        if (isPlaying) {
                             ytPlayer.pauseVideo();
-                            isPlaying = false;
-                            pauseBtn.textContent = '▶';
-                            if (currentDisc) currentDisc.classList.remove('playing');
                         } else {
                             ytPlayer.playVideo();
-                            isPlaying = true;
-                            pauseBtn.textContent = '⏸';
-                            if (currentDisc) currentDisc.classList.add('playing');
+                        }
+                    });
+                }
+
+                // Volume slider
+                if (volSlider) {
+                    volSlider.addEventListener('input', function() {
+                        volume = parseInt(this.value, 10);
+                        if (ytPlayer && playerReady && ytPlayer.setVolume) {
+                            ytPlayer.setVolume(volume);
                         }
                     });
                 }
