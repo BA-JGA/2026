@@ -29,8 +29,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', system-ui, sans-serif; background: #0a0a0a; color: #fff; overflow-x: hidden; }
+        html { scroll-behavior: smooth; overflow-x: clip; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: #0a0a0a; color: #fff; overflow-x: clip; }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
@@ -1450,7 +1450,7 @@
             <div class="float-element hero-parallax-el bottom-40 right-[25%] text-gold-300 text-4xl" data-speed="0.35" data-mouse="20" style="animation-delay: 2.5s;">★</div>
 
             <!-- Main hero content -->
-            <div class="text-center z-10 max-w-4xl" id="hero-content">
+            <div class="text-center z-10 max-w-4xl w-full px-4" id="hero-content">
                 <!-- Small label -->
                 <p id="hero-label" class="text-gold-400 text-sm tracking-[0.3em] uppercase mb-6 font-medium" style="animation: fadeInUp 0.8s ease-out 0.2s both">
                     Der Untergang von
@@ -1593,7 +1593,7 @@
         </div>
 
         <!-- ====== STORY SECTION ====== -->
-        <section id="story" class="relative py-24 sm:py-32 px-6 section-glow-pulse">
+        <section id="story" class="relative py-24 sm:py-32 px-6 section-glow-pulse overflow-x-clip">
             <!-- Ambient orb -->
             <div class="gradient-orb" style="width:400px;height:400px;background:radial-gradient(circle,#FFD700,transparent);top:10%;right:-10%;animation:orb-drift-2 20s ease-in-out infinite;"></div>
 
@@ -1759,7 +1759,7 @@
         </div>
 
         <!-- ====== VIDEOS SECTION ====== -->
-        <section id="videos" class="relative py-24 sm:py-32 px-6 section-glow">
+        <section id="videos" class="relative py-24 sm:py-32 px-6 section-glow overflow-x-clip">
             <!-- Ambient orb -->
             <div class="gradient-orb" style="width:350px;height:350px;background:radial-gradient(circle,#DAA520,transparent);bottom:5%;left:-8%;animation:orb-drift-1 16s ease-in-out infinite;"></div>
 
@@ -1900,7 +1900,7 @@
         </div>
 
         <!-- ====== COMMENTS SECTION ====== -->
-        <section id="kommentare" class="relative py-24 sm:py-32 px-6 section-glow-pulse">
+        <section id="kommentare" class="relative py-24 sm:py-32 px-6 section-glow-pulse overflow-x-clip">
             <div class="max-w-3xl mx-auto">
                 <!-- Section Header -->
                 <div class="text-center mb-16 reveal stagger-in">
@@ -2169,22 +2169,7 @@
                             }
                         }, 600);
 
-                        try {
-                            window._introAudio = new Audio('assets/intro.mp3');
-                            window._introAudio.volume = 0.5;
-                            window._introAudio.play();
-                            setTimeout(function() { window._introAudio.pause(); }, 3000);
-                            var videosEl = document.getElementById('videos');
-                            if (videosEl) {
-                                var audioObserver = new IntersectionObserver(function(entries) {
-                                    if (entries[0].isIntersecting && window._introAudio.paused && !window._jukeboxActive) {
-                                        window._introAudio.play();
-                                        audioObserver.disconnect();
-                                    }
-                                }, { threshold: 0.2 });
-                                audioObserver.observe(videosEl);
-                            }
-                        } catch(e) {}
+                        // intro audio is now handled by initMainPage()
                     }, 700);
                 } else {
                     passwordInput.classList.add('shake');
@@ -2277,7 +2262,29 @@
         };
 
         // ---- Initialize Main Page ----
+        function initIntroAudio() {
+            try {
+                window._introAudio = new Audio('assets/intro.mp3');
+                window._introAudio.volume = 0.5;
+                window._introAudio.play().catch(function() {});
+                setTimeout(function() { if (window._introAudio) window._introAudio.pause(); }, 3000);
+                var videosEl = document.getElementById('videos');
+                if (videosEl) {
+                    var audioObserver = new IntersectionObserver(function(entries) {
+                        if (entries[0].isIntersecting && window._introAudio.paused && !window._jukeboxActive) {
+                            window._introAudio.play().catch(function() {});
+                            audioObserver.disconnect();
+                        }
+                    }, { threshold: 0.2 });
+                    audioObserver.observe(videosEl);
+                }
+            } catch(e) {}
+        }
+
         function initMainPage() {
+            // Start intro audio
+            initIntroAudio();
+
             // Create main particles
             createParticles('main-particles', 25);
 
