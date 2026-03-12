@@ -1189,6 +1189,145 @@
         body { -webkit-user-select: none; user-select: none; }
         input, textarea { -webkit-user-select: auto; user-select: auto; }
         @media print { body { display: none !important; } }
+
+        /* ===== CRT MONITOR — Photo Frame (Desktop only) ===== */
+        @media (min-width: 1024px) {
+            html { overflow: hidden; height: 100%; }
+            body {
+                height: 100vh;
+                overflow: hidden;
+                margin: 0;
+                background: #1a1008;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            #crt-monitor {
+                position: relative;
+                aspect-ratio: 1920 / 1047;
+                /* Immer komplett sichtbar: nimm das Minimum aus Breite/Hoehe */
+                width: min(100vw, calc(100vh * 1920 / 1047));
+            }
+
+            #crt-frame {
+                position: absolute;
+                inset: 0;
+                background: url('assets/crt-monitor transparent.png') 0 0 / 100% 100% no-repeat;
+                z-index: 10;
+                pointer-events: none;
+            }
+
+            #crt-screen {
+                position: absolute;
+                /* Screen area mapped to photo coordinates (% of image) */
+                left: 30%;
+                top: 15%;
+                width: 39.5%;
+                height: 57%;
+                overflow-y: auto;
+                overflow-x: hidden;
+                transform: translateZ(0);
+                border-radius: 8px;
+                scrollbar-width: none;
+                z-index: 1;
+            }
+
+            #crt-screen::-webkit-scrollbar { display: none; }
+            #crt-screen *, #crt-screen *::-webkit-scrollbar { scrollbar-width: none; }
+            #crt-screen *::-webkit-scrollbar { display: none; }
+
+            /* Vignette + CRT warmth overlay */
+            #crt-screen::after {
+                content: '';
+                position: sticky;
+                top: 0;
+                display: block;
+                width: 100%;
+                height: 100%;
+                margin-bottom: -100%;
+                pointer-events: none;
+                z-index: 100;
+                background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.3) 100%);
+            }
+
+            #crt-scanlines {
+                position: absolute;
+                left: 30%;
+                top: 15%;
+                width: 39.5%;
+                height: 57%;
+                pointer-events: none;
+                z-index: 15;
+                border-radius: 8px;
+                background: repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0,0,0,0.1) 2px,
+                    rgba(0,0,0,0.1) 4px
+                );
+            }
+
+            #crt-off-overlay {
+                position: absolute;
+                left: 30%;
+                top: 15%;
+                width: 39.5%;
+                height: 57%;
+                border-radius: 8px;
+                z-index: 12;
+                background: #000;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s ease;
+            }
+            #crt-off-overlay.off {
+                opacity: 1;
+            }
+            #crt-off-overlay.off::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 10%;
+                right: 10%;
+                height: 2px;
+                background: rgba(255,255,255,0.8);
+                box-shadow: 0 0 20px rgba(255,255,255,0.5), 0 0 60px rgba(255,255,255,0.2);
+                animation: crt-line-shrink 0.5s ease-out forwards;
+            }
+            @keyframes crt-line-shrink {
+                0% { left: 5%; right: 5%; height: 3px; opacity: 1; }
+                70% { left: 30%; right: 30%; height: 2px; opacity: 0.8; }
+                100% { left: 48%; right: 48%; height: 1px; opacity: 0.3; }
+            }
+
+            /* Frame wechselt PNG wenn Monitor aus */
+            #crt-frame.off {
+                background-image: url('assets/crt-monitor aus.png');
+            }
+
+            /* Power button: invisible overlay on the photo's power button area */
+            #crt-power {
+                position: absolute;
+                top: 75.5%;
+                left: 56%;
+                width: 4%;
+                height: 4%;
+                cursor: pointer;
+                background: transparent;
+                border: none;
+                border-radius: 4px;
+                z-index: 300;
+            }
+            #crt-power:hover { background: rgba(255,255,255,0.08); }
+
+        }
+
+        @media (max-width: 1023px) {
+            #crt-monitor, #crt-screen { display: contents; }
+            #crt-scanlines, #crt-off-overlay, #crt-power, #crt-frame { display: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -1199,6 +1338,10 @@
         if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S' || e.key === 'u' || e.key === 'U')) e.preventDefault();
     });
     </script>
+
+    <!-- CRT Monitor Wrapper (Desktop only) -->
+    <div id="crt-monitor">
+    <div id="crt-screen">
 
     <!-- ============================================ -->
     <!-- LOCK SCREEN -->
@@ -2993,6 +3136,31 @@
         // ---- Focus password input on load (dev mode only) ----
         if (passwordInput) setTimeout(() => passwordInput.focus(), 500);
 
+    })();
+    </script>
+
+    </div><!-- #crt-screen -->
+    <div id="crt-off-overlay"></div>
+    <div id="crt-frame"></div>
+    <div id="crt-scanlines"></div>
+    <button id="crt-power"></button>
+    </div><!-- #crt-monitor -->
+
+    <script>
+    (function() {
+        var crtPower = document.getElementById('crt-power');
+        var crtOff = document.getElementById('crt-off-overlay');
+        var crtFrame = document.getElementById('crt-frame');
+        var crtScanlines = document.getElementById('crt-scanlines');
+        if (crtPower && window.innerWidth >= 1024) {
+            var crtIsOn = true;
+            crtPower.addEventListener('click', function() {
+                crtIsOn = !crtIsOn;
+                crtOff.classList.toggle('off', !crtIsOn);
+                crtFrame.classList.toggle('off', !crtIsOn);
+                if (crtScanlines) crtScanlines.style.display = crtIsOn ? '' : 'none';
+            });
+        }
     })();
     </script>
 

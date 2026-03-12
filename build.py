@@ -186,6 +186,10 @@ def build_encrypted_page(encrypted_data: dict, original_html: str) -> str:
 
     {security_script_safe}
 
+    <!-- CRT Monitor Wrapper (Desktop only) -->
+    <div id="crt-monitor">
+    <div id="crt-screen">
+
     {lock_screen_safe}
 
     <!-- Encrypted content container -->
@@ -295,6 +299,31 @@ def build_encrypted_page(encrypted_data: dict, original_html: str) -> str:
 
         enterBtn.addEventListener('click', tryUnlock);
         pwInput.addEventListener('keydown', e => {{ if (e.key === 'Enter') tryUnlock(); }});
+    }})();
+    </script>
+
+    </div><!-- #crt-screen -->
+    <div id="crt-off-overlay"></div>
+    <div id="crt-frame"></div>
+    <div id="crt-scanlines"></div>
+    <button id="crt-power"></button>
+    </div><!-- #crt-monitor -->
+
+    <script>
+    (function() {{
+        var crtPower = document.getElementById('crt-power');
+        var crtOff = document.getElementById('crt-off-overlay');
+        var crtFrame = document.getElementById('crt-frame');
+        var crtScanlines = document.getElementById('crt-scanlines');
+        if (crtPower && window.innerWidth >= 1024) {{
+            var crtIsOn = true;
+            crtPower.addEventListener('click', function() {{
+                crtIsOn = !crtIsOn;
+                crtOff.classList.toggle('off', !crtIsOn);
+                crtFrame.classList.toggle('off', !crtIsOn);
+                if (crtScanlines) crtScanlines.style.display = crtIsOn ? '' : 'none';
+            }});
+        }}
     }})();
     </script>
 </body>
