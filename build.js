@@ -49,19 +49,24 @@ const lockScreenHtml = html.substring(lockStart, lockEnd).trim();
 const stepScriptMatch = html.match(/<script>\s*\/\/ ---- Step Navigation[\s\S]*?<\/script>/);
 const stepScript = stepScriptMatch ? stepScriptMatch[0] : '';
 
-// 4. Extract main content to encrypt (from <div id="main-content" to last </script> before </body>)
+// 4. Extract main content to encrypt (from <div id="main-content" to <!-- ENCRYPT END -->)
 const mainStart = html.indexOf('<div id="main-content"');
-const bodyEnd = html.indexOf('</body>');
-// Find the last </script> before </body>
-const beforeBody = html.substring(0, bodyEnd);
-const lastScriptEnd = beforeBody.lastIndexOf('</script>') + '</script>'.length;
+const encryptEnd = html.indexOf('<!-- ENCRYPT END -->');
 
-if (mainStart === -1 || lastScriptEnd <= 0) {
-    console.error('❌ Could not find main-content');
+if (mainStart === -1 || encryptEnd === -1) {
+    console.error('❌ Could not find main-content or ENCRYPT END marker');
     process.exit(1);
 }
 
-let contentToEncrypt = html.substring(mainStart, lastScriptEnd);
+let contentToEncrypt = html.substring(mainStart, encryptEnd).trim();
+
+// 5. Extract CRT power script (between </div><!-- #crt-monitor --> and </body>)
+const crtMonitorEnd = html.indexOf('</div><!-- #crt-monitor -->');
+const bodyEnd = html.indexOf('</body>');
+let crtPowerScript = '';
+if (crtMonitorEnd !== -1 && bodyEnd !== -1) {
+    crtPowerScript = html.substring(crtMonitorEnd + '</div><!-- #crt-monitor -->'.length, bodyEnd).trim();
+}
 
 // Remove 'hidden' class so content shows after decryption
 contentToEncrypt = contentToEncrypt.replace(
@@ -71,11 +76,11 @@ contentToEncrypt = contentToEncrypt.replace(
 
 console.log(`  Content: ${contentToEncrypt.length.toLocaleString()} bytes`);
 
-// 5. Encrypt
+// 6. Encrypt
 const encrypted = encrypt(contentToEncrypt, PASSWORD);
 console.log(`  Encrypted: ${encrypted.data.length.toLocaleString()} bytes (base64)`);
 
-// 6. Build output
+// 7. Build output
 const output = `<!DOCTYPE html>
 <html lang="de">
 <head>
@@ -83,10 +88,21 @@ ${headContent}
 </head>
 <body class="bg-black text-white" style="font-family:'Inter',system-ui,sans-serif;">
 
+    <!-- CRT Monitor Wrapper (Desktop only) -->
+    <div id="crt-monitor">
+    <div id="crt-screen">
+
     ${lockScreenHtml}
 
     <!-- Decrypted content injected here -->
     <div id="decrypted-content"></div>
+
+    </div><!-- #crt-screen -->
+    <div id="crt-off-overlay"></div>
+    <div id="crt-frame"></div>
+    <div id="crt-scanlines"></div>
+    <button id="crt-power"></button>
+    </div><!-- #crt-monitor -->
 
     ${stepScript}
 
@@ -296,6 +312,8 @@ ${headContent}
         pwInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') tryUnlock(); });
     })();
     </script>
+
+    ${crtPowerScript}
 </body>
 </html>`;
 
