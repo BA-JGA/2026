@@ -1190,6 +1190,247 @@
         input, textarea { -webkit-user-select: auto; user-select: auto; }
         @media print { body { display: none !important; } }
 
+        /* ===== VHS VIDEO CARDS ===== */
+        .vhs-card {
+            position: relative;
+            background: #111;
+            border: 2px solid #333;
+            box-shadow: inset 0 0 0 1px #222, 0 4px 20px rgba(0,0,0,0.5);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .vhs-card:hover {
+            transform: translateY(-3px);
+            box-shadow: inset 0 0 0 1px #444, 0 8px 30px rgba(255,215,0,0.1);
+        }
+        .vhs-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px);
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.4;
+        }
+        .vhs-poster {
+            position: relative;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            background: #000;
+        }
+        .vhs-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+        .vhs-poster .play-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.3);
+            transition: background 0.3s ease;
+            z-index: 1;
+        }
+        .vhs-card:hover .play-overlay { background: rgba(0,0,0,0.15); }
+        .play-overlay svg {
+            width: 48px;
+            height: 48px;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+            transition: transform 0.3s ease;
+        }
+        .vhs-card:hover .play-overlay svg { transform: scale(1.15); }
+        .vhs-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: linear-gradient(180deg, #1a1a1a, #111);
+            border-top: 1px solid #2a2a2a;
+        }
+        .vhs-label-title {
+            font-family: 'Inter', monospace;
+            font-size: 0.7rem;
+            color: rgba(255,215,0,0.6);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .vhs-label-size {
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.2);
+            font-family: monospace;
+        }
+        .vhs-tracking {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.3), transparent);
+            z-index: 3;
+            animation: vhs-track 3s linear infinite;
+            opacity: 0;
+        }
+        .vhs-card:hover .vhs-tracking { opacity: 1; }
+        @keyframes vhs-track {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        /* VHS active state (video playing) */
+        .vhs-card.active { border-color: rgba(255,215,0,0.3); }
+        .vhs-card.active .vhs-tracking { opacity: 1; }
+        /* VHS video element */
+        .vhs-card video {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            display: block;
+        }
+
+        /* ===== MASONRY PHOTO GALLERY ===== */
+        .masonry-gallery {
+            columns: 2;
+            column-gap: 8px;
+        }
+        @media (min-width: 640px) {
+            .masonry-gallery { columns: 3; column-gap: 12px; }
+        }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        @media (min-width: 640px) {
+            .masonry-item { margin-bottom: 12px; }
+        }
+        .masonry-item:hover { transform: scale(1.02); }
+        .masonry-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+        .masonry-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            transition: border-color 0.3s ease;
+            pointer-events: none;
+        }
+        .masonry-item:hover::after { border-color: rgba(255,215,0,0.4); }
+        .photo-download {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.7);
+            border: 1px solid rgba(255,215,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 5;
+            pointer-events: auto;
+            color: #FFD700;
+            text-decoration: none;
+        }
+        .masonry-item:hover .photo-download { opacity: 1; }
+        @media (hover: none) {
+            .photo-download { opacity: 0.7; }
+        }
+        .hidden-photo { display: none; }
+        .hidden-photo.shown { display: block; }
+
+        /* ===== PHOTO LIGHTBOX ===== */
+        .photo-lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .photo-lightbox.open { opacity: 1; visibility: visible; }
+        .photo-lightbox img {
+            max-width: 92vw;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 8px;
+            pointer-events: auto;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        .lightbox-close, .lightbox-prev, .lightbox-next, .lightbox-download {
+            position: absolute;
+            background: rgba(255,215,0,0.15);
+            border: 1px solid rgba(255,215,0,0.3);
+            color: #FFD700;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            z-index: 10001;
+        }
+        .lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover, .lightbox-download:hover {
+            background: rgba(255,215,0,0.3);
+        }
+        .lightbox-close { top: 16px; right: 16px; }
+        .lightbox-download { top: 16px; right: 72px; }
+        .lightbox-prev { left: 16px; top: 50%; transform: translateY(-50%); }
+        .lightbox-next { right: 16px; top: 50%; transform: translateY(-50%); }
+        .lightbox-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,215,0,0.5);
+            font-size: 0.85rem;
+            font-family: monospace;
+        }
+
+        /* ===== SHOW ALL PHOTOS BUTTON ===== */
+        .show-all-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 999px;
+            background: rgba(255,215,0,0.05);
+            color: #FFD700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .show-all-btn:hover {
+            background: rgba(255,215,0,0.15);
+            border-color: rgba(255,215,0,0.5);
+            transform: translateY(-2px);
+        }
+
         /* ===== CRT MONITOR — Photo Frame (Desktop only) ===== */
         @media (min-width: 1024px) {
             html { overflow: hidden; height: 100%; }
@@ -1385,6 +1626,39 @@
             #crt-screen #step-1 .max-w-xl { margin-bottom: 0.5rem; }
             #crt-screen #step-1 .font-display.text-xl { font-size: 0.95rem; margin-bottom: 0.5rem; }
             #crt-screen #step-1 .flex.gap-4 button { padding: 0.5rem 1.5rem; font-size: 0.75rem; }
+
+            /* Step 2 kompakter im CRT */
+            #crt-screen #step-2 {
+                min-height: auto;
+                padding: 1rem 1.5rem;
+                justify-content: start;
+                gap: 0;
+            }
+            #crt-screen #step-2 p:first-child { font-size: 0.7rem; margin-bottom: 0.3rem; }
+            #crt-screen #step-2 h2 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+            #crt-screen #step-2 .max-w-lg { max-width: 280px; margin-bottom: 0.5rem; }
+            #crt-screen #step-2 .flex.gap-4 { gap: 0.5rem; }
+            #crt-screen #step-2 .flex.gap-4 button { padding: 0.4rem 1.2rem; font-size: 0.7rem; }
+
+            /* Step 3 (Password) kompakter im CRT */
+            #crt-screen #step-password {
+                min-height: auto;
+                padding: 1rem 1.5rem;
+                justify-content: start;
+                gap: 0;
+            }
+            #crt-screen #step-password svg:first-child { width: 40px; height: 25px; margin-bottom: 0.3rem; }
+            #crt-screen #step-password h1 { font-size: 1.2rem; margin-bottom: 0.2rem; }
+            #crt-screen #step-password h1 + p { font-size: 0.7rem; margin-bottom: 0.3rem; }
+
+            /* CRT overrides for gallery & videos */
+            .masonry-gallery { columns: 2 !important; column-gap: 6px; }
+            .masonry-item { margin-bottom: 6px; border-radius: 6px; }
+            .vhs-card { border-radius: 6px; }
+            .vhs-label { padding: 5px 8px; }
+            .vhs-label-title { font-size: 0.6rem; }
+            .play-overlay svg { width: 32px; height: 32px; }
+            .show-all-btn { padding: 10px 20px; font-size: 0.8rem; }
 
         }
 
@@ -1582,6 +1856,14 @@
                         </span>
                         <span class="nav-pill-label">Videos</span>
                     </a>
+                    <a href="#fotos" class="nav-pill" data-section="fotos" style="--pill-from:#FFD700;--pill-to:#FFF8DC;">
+                        <span class="nav-pill-bg"></span>
+                        <span class="nav-pill-glow"></span>
+                        <span class="nav-pill-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        </span>
+                        <span class="nav-pill-label">Fotos</span>
+                    </a>
                     <a href="#kommentare" class="nav-pill" data-section="kommentare" style="--pill-from:#FFD700;--pill-to:#B8860B;">
                         <span class="nav-pill-bg"></span>
                         <span class="nav-pill-glow"></span>
@@ -1613,6 +1895,7 @@
                 <div class="px-6 py-4 flex flex-col gap-4">
                     <a href="#story" class="nav-link">Story</a>
                     <a href="#videos" class="nav-link">Videos</a>
+                    <a href="#fotos" class="nav-link">Fotos</a>
                     <a href="#kommentare" class="nav-link">Grüße</a>
                     <button onclick="window.bamLogout()" class="nav-link text-white/30 hover:text-red-400 transition-colors text-left text-sm mt-2 pt-2 border-t border-white/5">Logout</button>
                 </div>
@@ -2042,119 +2325,125 @@
                     <div class="line-reveal mt-8 mx-auto"></div>
                 </div>
 
-                <!-- Video Grid -->
-                <div class="grid gap-8 md:gap-10">
-                    <!-- Video 1 -->
-                    <div class="video-card reveal tilt-card">
-                        <div class="p-4 sm:p-5 border-b border-gold-300/10">
-                            <h3 class="font-display text-lg sm:text-xl font-semibold text-white flex items-center gap-3">
-                                <span class="text-gold-300 text-2xl">▶</span>
-                                Video 1
-                                <span class="text-white/10 text-xs ml-auto font-body">Track 01</span>
-                            </h3>
-                        </div>
-                        <iframe
-                            src="https://www.youtube-nocookie.com/embed/AOXs9DLQArQ?rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&color=white&cc_load_policy=0&origin=https://ba-jga.github.io"
-                            title="Video 1"
-                            frameborder="0"
-                            allow="accelerometer; encrypted-media; gyroscope"
-                            loading="lazy"
-                        ></iframe>
+                <!-- JGA Videos (VHS Design) -->
+                <div class="mb-16">
+                    <h3 class="font-display text-2xl sm:text-3xl font-bold text-white mb-3 text-center">JGA Highlights</h3>
+                    <p class="text-white/30 text-sm text-center mb-8">Tipp auf Play — Videos laden erst bei Klick</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4" id="jga-video-grid">
+                        <!-- JS fills this -->
                     </div>
+                </div>
 
-                    <!-- Video 2 -->
-                    <div class="video-card reveal tilt-card">
-                        <div class="p-4 sm:p-5 border-b border-gold-300/10">
-                            <h3 class="font-display text-lg sm:text-xl font-semibold text-white flex items-center gap-3">
-                                <span class="text-gold-300 text-2xl">▶</span>
-                                Video 2
-                                <span class="text-white/10 text-xs ml-auto font-body">Track 02</span>
-                            </h3>
-                        </div>
-                        <iframe
-                            src="https://www.youtube-nocookie.com/embed/_OiwixsKMno?rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&color=white&cc_load_policy=0&origin=https://ba-jga.github.io"
-                            title="Video 2"
-                            frameborder="0"
-                            allow="accelerometer; encrypted-media; gyroscope"
-                            loading="lazy"
-                        ></iframe>
-                    </div>
+                <!-- Gold Sub-Divider -->
+                <div class="w-16 h-px bg-gradient-to-r from-transparent via-gold-300/30 to-transparent mx-auto my-12"></div>
 
-                    <!-- Shorts Row (2 side by side) -->
-                    <div class="grid grid-cols-2 gap-6 md:gap-8">
-                        <!-- Short 1 -->
+                <!-- YouTube Klassiker -->
+                <div>
+                    <h3 class="font-display text-2xl sm:text-3xl font-bold text-white mb-8 text-center">Die Klassiker</h3>
+                    <div class="grid gap-8 md:gap-10">
+                        <!-- Video 1 -->
                         <div class="video-card reveal tilt-card">
                             <div class="p-4 sm:p-5 border-b border-gold-300/10">
-                                <h3 class="font-display text-base sm:text-lg font-semibold text-white flex items-center gap-2 sm:gap-3">
-                                    <span class="text-gold-300 text-xl sm:text-2xl">▶</span>
-                                    Short 1
-                                    <span class="text-white/10 text-xs ml-auto font-body">Track 03</span>
+                                <h3 class="font-display text-lg sm:text-xl font-semibold text-white flex items-center gap-3">
+                                    <span class="text-gold-300 text-2xl">▶</span>
+                                    Video 1
+                                    <span class="text-white/10 text-xs ml-auto font-body">Track 01</span>
                                 </h3>
                             </div>
                             <iframe
-                                src="https://www.youtube-nocookie.com/embed/N15fJp9UCec?rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&color=white&cc_load_policy=0&origin=https://ba-jga.github.io"
-                                title="Short 1"
+                                src="https://www.youtube-nocookie.com/embed/AOXs9DLQArQ?rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&color=white&cc_load_policy=0&origin=https://ba-jga.github.io"
+                                title="Video 1"
                                 frameborder="0"
                                 allow="accelerometer; encrypted-media; gyroscope"
                                 loading="lazy"
-                                style="aspect-ratio:9/16"
                             ></iframe>
                         </div>
 
-                        <!-- Short 2 -->
+                        <!-- Video 2 -->
                         <div class="video-card reveal tilt-card">
                             <div class="p-4 sm:p-5 border-b border-gold-300/10">
-                                <h3 class="font-display text-base sm:text-lg font-semibold text-white flex items-center gap-2 sm:gap-3">
-                                    <span class="text-gold-300 text-xl sm:text-2xl">▶</span>
-                                    Short 2
-                                    <span class="text-white/10 text-xs ml-auto font-body">Track 04</span>
+                                <h3 class="font-display text-lg sm:text-xl font-semibold text-white flex items-center gap-3">
+                                    <span class="text-gold-300 text-2xl">▶</span>
+                                    Video 2
+                                    <span class="text-white/10 text-xs ml-auto font-body">Track 02</span>
                                 </h3>
                             </div>
                             <iframe
-                                src="https://www.youtube-nocookie.com/embed/mc1JViWIUaw?rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&color=white&cc_load_policy=0&origin=https://ba-jga.github.io"
-                                title="Short 2"
+                                src="https://www.youtube-nocookie.com/embed/_OiwixsKMno?rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&color=white&cc_load_policy=0&origin=https://ba-jga.github.io"
+                                title="Video 2"
                                 frameborder="0"
                                 allow="accelerometer; encrypted-media; gyroscope"
                                 loading="lazy"
-                                style="aspect-ratio:9/16"
                             ></iframe>
                         </div>
-                    </div>
 
-                    <!-- Video 5 -->
-                    <div class="video-card reveal tilt-card">
-                        <div class="p-4 sm:p-5 border-b border-gold-300/10">
-                            <h3 class="font-display text-lg sm:text-xl font-semibold text-white flex items-center gap-3">
-                                <span class="text-gold-300 text-2xl">▶</span>
-                                MOV00605
-                                <span class="text-white/10 text-xs ml-auto font-body">Track 05</span>
-                            </h3>
+                        <!-- Shorts Row (2 side by side) -->
+                        <div class="grid grid-cols-2 gap-6 md:gap-8">
+                            <div class="video-card reveal tilt-card">
+                                <div class="p-4 sm:p-5 border-b border-gold-300/10">
+                                    <h3 class="font-display text-base sm:text-lg font-semibold text-white flex items-center gap-2 sm:gap-3">
+                                        <span class="text-gold-300 text-xl sm:text-2xl">▶</span>
+                                        Short 1
+                                        <span class="text-white/10 text-xs ml-auto font-body">Track 03</span>
+                                    </h3>
+                                </div>
+                                <iframe
+                                    src="https://www.youtube-nocookie.com/embed/N15fJp9UCec?rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&color=white&cc_load_policy=0&origin=https://ba-jga.github.io"
+                                    title="Short 1" frameborder="0"
+                                    allow="accelerometer; encrypted-media; gyroscope"
+                                    loading="lazy" style="aspect-ratio:9/16"
+                                ></iframe>
+                            </div>
+                            <div class="video-card reveal tilt-card">
+                                <div class="p-4 sm:p-5 border-b border-gold-300/10">
+                                    <h3 class="font-display text-base sm:text-lg font-semibold text-white flex items-center gap-2 sm:gap-3">
+                                        <span class="text-gold-300 text-xl sm:text-2xl">▶</span>
+                                        Short 2
+                                        <span class="text-white/10 text-xs ml-auto font-body">Track 04</span>
+                                    </h3>
+                                </div>
+                                <iframe
+                                    src="https://www.youtube-nocookie.com/embed/mc1JViWIUaw?rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&color=white&cc_load_policy=0&origin=https://ba-jga.github.io"
+                                    title="Short 2" frameborder="0"
+                                    allow="accelerometer; encrypted-media; gyroscope"
+                                    loading="lazy" style="aspect-ratio:9/16"
+                                ></iframe>
+                            </div>
                         </div>
-                        <iframe
-                            src="https://www.youtube-nocookie.com/embed/M2uVAhKDSXs?rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&color=white&cc_load_policy=0&origin=https://ba-jga.github.io"
-                            title="MOV00605"
-                            frameborder="0"
-                            allow="accelerometer; encrypted-media; gyroscope"
-                            loading="lazy"
-                        ></iframe>
-                    </div>
 
-                    <!-- Video 6 -->
-                    <div class="video-card reveal tilt-card">
-                        <div class="p-4 sm:p-5 border-b border-gold-300/10">
-                            <h3 class="font-display text-lg sm:text-xl font-semibold text-white flex items-center gap-3">
-                                <span class="text-gold-300 text-2xl">▶</span>
-                                Küs
-                                <span class="text-white/10 text-xs ml-auto font-body">Track 06</span>
-                            </h3>
+                        <!-- Video 5 -->
+                        <div class="video-card reveal tilt-card">
+                            <div class="p-4 sm:p-5 border-b border-gold-300/10">
+                                <h3 class="font-display text-lg sm:text-xl font-semibold text-white flex items-center gap-3">
+                                    <span class="text-gold-300 text-2xl">▶</span>
+                                    MOV00605
+                                    <span class="text-white/10 text-xs ml-auto font-body">Track 05</span>
+                                </h3>
+                            </div>
+                            <iframe
+                                src="https://www.youtube-nocookie.com/embed/M2uVAhKDSXs?rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&color=white&cc_load_policy=0&origin=https://ba-jga.github.io"
+                                title="MOV00605" frameborder="0"
+                                allow="accelerometer; encrypted-media; gyroscope"
+                                loading="lazy"
+                            ></iframe>
                         </div>
-                        <iframe
-                            src="https://www.youtube-nocookie.com/embed/jqzwAVDnvMQ?rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&color=white&cc_load_policy=0&origin=https://ba-jga.github.io"
-                            title="Küs"
-                            frameborder="0"
-                            allow="accelerometer; encrypted-media; gyroscope"
-                            loading="lazy"
-                        ></iframe>
+
+                        <!-- Video 6 -->
+                        <div class="video-card reveal tilt-card">
+                            <div class="p-4 sm:p-5 border-b border-gold-300/10">
+                                <h3 class="font-display text-lg sm:text-xl font-semibold text-white flex items-center gap-3">
+                                    <span class="text-gold-300 text-2xl">▶</span>
+                                    Küs
+                                    <span class="text-white/10 text-xs ml-auto font-body">Track 06</span>
+                                </h3>
+                            </div>
+                            <iframe
+                                src="https://www.youtube-nocookie.com/embed/jqzwAVDnvMQ?rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&color=white&cc_load_policy=0&origin=https://ba-jga.github.io"
+                                title="Küs" frameborder="0"
+                                allow="accelerometer; encrypted-media; gyroscope"
+                                loading="lazy"
+                            ></iframe>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2165,12 +2454,49 @@
             <span class="text-gold-300/20 text-2xl mx-6">★ ♫ ★</span>
         </div>
 
+        <!-- ====== PHOTO GALLERY SECTION ====== -->
+        <section id="fotos" class="relative py-24 sm:py-32 px-6 section-glow overflow-x-clip">
+            <div class="gradient-orb" style="width:400px;height:400px;background:radial-gradient(circle,#FFD700,transparent);top:10%;right:-10%;animation:orb-drift-2 14s ease-in-out infinite;"></div>
+
+            <div class="max-w-5xl mx-auto">
+                <!-- Section Header -->
+                <div class="text-center mb-16 reveal stagger-in">
+                    <p class="text-gold-400 text-sm tracking-[0.3em] uppercase mb-3 font-medium">Kapitel 3</p>
+                    <h2 class="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-gold-gradient mb-4 glitch-text" data-text="The Way You Make Me Feel">
+                        The Way You Make Me Feel
+                    </h2>
+                    <p class="text-white/40 max-w-xl mx-auto text-base sm:text-lg">
+                        138 Fotos vom JGA. Tipp auf ein Foto zum Vergrößern & Downloaden.
+                    </p>
+                    <div class="line-reveal mt-8 mx-auto"></div>
+                </div>
+
+                <!-- Masonry Gallery -->
+                <div class="masonry-gallery" id="photo-gallery">
+                    <!-- JS fills this -->
+                </div>
+
+                <!-- Show All Button -->
+                <div class="text-center mt-10" id="show-all-container">
+                    <button class="show-all-btn" id="show-all-photos" onclick="loadAllPhotos()">
+                        Alle 138 Fotos anzeigen
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- MJ Divider -->
+        <div class="mj-divider">
+            <span class="text-gold-300/20 text-2xl mx-6">📸 ♫ 📸</span>
+        </div>
+
         <!-- ====== COMMENTS SECTION ====== -->
         <section id="kommentare" class="relative py-24 sm:py-32 px-6 section-glow-pulse overflow-x-clip">
             <div class="max-w-3xl mx-auto">
                 <!-- Section Header -->
                 <div class="text-center mb-16 reveal stagger-in">
-                    <p class="text-gold-400 text-sm tracking-[0.3em] uppercase mb-3 font-medium">Kapitel 3</p>
+                    <p class="text-gold-400 text-sm tracking-[0.3em] uppercase mb-3 font-medium">Kapitel 4</p>
                     <h2 class="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-gold-gradient mb-4 glitch-text" data-text="You Are Not Alone">
                         You Are Not Alone
                     </h2>
@@ -2886,6 +3212,358 @@
 
             // GSAP enhances on top of CSS baseline
             initGSAP();
+
+            // ===== JGA LOCAL VIDEOS (VHS) =====
+            (function initLocalVideos() {
+                var JGA_VIDEOS = [
+                    {file:'IMG_8297.mp4',size:'3.8 MB'},
+                    {file:'IMG_8302.mp4',size:'27 MB'},
+                    {file:'IMG_8303.mp4',size:'41 MB'},
+                    {file:'IMG_8308.mp4',size:'2.8 MB'},
+                    {file:'IMG_8311.mp4',size:'57 MB'},
+                    {file:'IMG_8325.mp4',size:'23 MB'},
+                    {file:'IMG_8326.mp4',size:'37 MB'},
+                    {file:'IMG_8335.mp4',size:'35 MB'},
+                    {file:'IMG_8348.mp4',size:'23 MB'},
+                    {file:'IMG_8365.mp4',size:'89 MB'},
+                    {file:'IMG_8388.mp4',size:'71 MB'},
+                    {file:'IMG_8398.mp4',size:'53 MB'},
+                    {file:'IMG_8399.mp4',size:'14 MB'},
+                    {file:'17883f64-9202-4b08-9a0d-068c1becd720.mp4',size:'1.7 MB'},
+                    {file:'2eadbd31-2dcf-4d99-9ee5-ea75bf3f9ddd.mp4',size:'3.3 MB'},
+                    {file:'5404c6d9-94a2-4667-8dfe-058fe89595a5.mp4',size:'18 MB'},
+                    {file:'59f23233-af6e-42f1-8d6e-d1c3abbea41f.mp4',size:'14 MB'},
+                    {file:'813aaf82-3cb0-4075-ba6d-5fcbf7bfe7de.mp4',size:'2.2 MB'},
+                    {file:'b4225d04-66e6-4300-97a1-d250915d92d4.mp4',size:'916 KB'},
+                    {file:'b6a32237-ace6-4e7b-9298-08d4ae08f2e2.mp4',size:'3.6 MB'},
+                    {file:'e15a6f77-0167-45fa-b986-219c3e44f956.mp4',size:'1.8 MB'},
+                    {file:'f26d8340-de2a-43b9-b780-2b2a2ac4885e.mp4',size:'1.1 MB'}
+                ];
+                var basePath = 'assets/Videos/compressed/';
+                var posterPath = 'assets/Videos/posters/';
+                var grid = document.getElementById('jga-video-grid');
+                if (!grid || grid.children.length > 0) return;
+
+                // --- Video Lightbox ---
+                var vlb = document.createElement('div');
+                vlb.className = 'photo-lightbox';
+                vlb.style.cssText = 'flex-direction:column;align-items:center;justify-content:center;';
+                vlb.innerHTML =
+                    '<button class="lightbox-close" aria-label="Schließen">&times;</button>' +
+                    '<button class="lightbox-prev" aria-label="Vorheriges Video"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>' +
+                    '<button class="lightbox-next" aria-label="Nächstes Video"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>' +
+                    '<div class="vlb-video-wrap" style="width:92vw;max-width:900px;max-height:80vh;display:flex;align-items:center;justify-content:center;"></div>' +
+                    '<div style="display:flex;align-items:center;gap:16px;margin-top:12px;">' +
+                        '<button class="vlb-play" style="background:none;border:1px solid rgba(255,215,0,0.3);color:#FFD700;border-radius:50%;width:44px;height:44px;cursor:pointer;font-size:1.3rem;display:flex;align-items:center;justify-content:center;">⏸</button>' +
+                        '<button class="vlb-mute" style="background:none;border:1px solid rgba(255,215,0,0.3);color:#FFD700;border-radius:50%;width:44px;height:44px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;">🔊</button>' +
+                    '</div>' +
+                    '<div class="lightbox-counter"></div>';
+                document.body.appendChild(vlb);
+
+                var vlbWrap = vlb.querySelector('.vlb-video-wrap');
+                var vlbCounter = vlb.querySelector('.lightbox-counter');
+                var vlbPlayBtn = vlb.querySelector('.vlb-play');
+                var vlbMuteBtn = vlb.querySelector('.vlb-mute');
+                var vlbVideo = null;
+                var vlbIndex = 0;
+
+                function openVideoLightbox(idx) {
+                    vlbIndex = idx;
+                    var src = basePath + encodeURIComponent(JGA_VIDEOS[idx].file);
+                    // Remove old video
+                    vlbWrap.innerHTML = '';
+                    vlbVideo = document.createElement('video');
+                    vlbVideo.src = src;
+                    vlbVideo.autoplay = true;
+                    vlbVideo.playsInline = true;
+                    vlbVideo.controls = false;
+                    vlbVideo.setAttribute('controlsList', 'nodownload noplaybackrate');
+                    vlbVideo.setAttribute('disablePictureInPicture', '');
+                    vlbVideo.oncontextmenu = function() { return false; };
+                    vlbVideo.style.cssText = 'width:100%;max-height:80vh;border-radius:8px;background:#000;';
+                    vlbWrap.appendChild(vlbVideo);
+                    vlbCounter.textContent = (idx + 1) + ' / ' + JGA_VIDEOS.length;
+                    vlbPlayBtn.textContent = '⏸';
+                    vlbMuteBtn.textContent = vlbVideo.muted ? '🔇' : '🔊';
+                    vlb.classList.add('open');
+                    document.body.style.overflow = 'hidden';
+
+                    vlbVideo.addEventListener('ended', function() {
+                        vlbPlayBtn.textContent = '▶';
+                    });
+                    vlbVideo.addEventListener('click', function() {
+                        if (vlbVideo.paused) { vlbVideo.play(); vlbPlayBtn.textContent = '⏸'; }
+                        else { vlbVideo.pause(); vlbPlayBtn.textContent = '▶'; }
+                    });
+                }
+
+                function closeVideoLightbox() {
+                    if (vlbVideo) { vlbVideo.pause(); vlbVideo.src = ''; }
+                    vlb.classList.remove('open');
+                    document.body.style.overflow = '';
+                }
+
+                function navigateVideoLightbox(dir) {
+                    var newIdx = vlbIndex + dir;
+                    if (newIdx < 0) newIdx = JGA_VIDEOS.length - 1;
+                    if (newIdx >= JGA_VIDEOS.length) newIdx = 0;
+                    openVideoLightbox(newIdx);
+                }
+
+                vlb.querySelector('.lightbox-close').addEventListener('click', closeVideoLightbox);
+                vlb.querySelector('.lightbox-prev').addEventListener('click', function() { navigateVideoLightbox(-1); });
+                vlb.querySelector('.lightbox-next').addEventListener('click', function() { navigateVideoLightbox(1); });
+                vlb.addEventListener('click', function(e) { if (e.target === vlb) closeVideoLightbox(); });
+
+                vlbPlayBtn.addEventListener('click', function() {
+                    if (!vlbVideo) return;
+                    if (vlbVideo.paused) { vlbVideo.play(); vlbPlayBtn.textContent = '⏸'; }
+                    else { vlbVideo.pause(); vlbPlayBtn.textContent = '▶'; }
+                });
+                vlbMuteBtn.addEventListener('click', function() {
+                    if (!vlbVideo) return;
+                    vlbVideo.muted = !vlbVideo.muted;
+                    vlbMuteBtn.textContent = vlbVideo.muted ? '🔇' : '🔊';
+                });
+
+                // Keyboard
+                document.addEventListener('keydown', function(e) {
+                    if (!vlb.classList.contains('open')) return;
+                    if (e.key === 'Escape') closeVideoLightbox();
+                    if (e.key === 'ArrowLeft') navigateVideoLightbox(-1);
+                    if (e.key === 'ArrowRight') navigateVideoLightbox(1);
+                    if (e.key === ' ') { e.preventDefault(); vlbPlayBtn.click(); }
+                });
+
+                // Touch swipe
+                var vTouchX = 0;
+                vlb.addEventListener('touchstart', function(e) { vTouchX = e.changedTouches[0].screenX; }, {passive: true});
+                vlb.addEventListener('touchend', function(e) {
+                    var diff = e.changedTouches[0].screenX - vTouchX;
+                    if (Math.abs(diff) > 50) navigateVideoLightbox(diff > 0 ? -1 : 1);
+                }, {passive: true});
+
+                // --- Build VHS Grid Cards ---
+                JGA_VIDEOS.forEach(function(v, i) {
+                    var num = String(i + 1).padStart(2, '0');
+                    var card = document.createElement('div');
+                    card.className = 'vhs-card';
+                    card.dataset.idx = i;
+                    var posterName = v.file.replace('.mp4', '.jpg');
+                    card.innerHTML =
+                        '<div class="vhs-tracking"></div>' +
+                        '<div class="vhs-poster">' +
+                            '<img src="' + posterPath + encodeURIComponent(posterName) + '" alt="VHS ' + num + '" loading="lazy">' +
+                            '<div class="play-overlay">' +
+                                '<svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22" fill="rgba(0,0,0,0.5)" stroke="rgba(255,215,0,0.6)" stroke-width="2"/><polygon points="18,14 36,24 18,34" fill="#FFD700"/></svg>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="vhs-label">' +
+                            '<span class="vhs-label-title">VHS #' + num + '</span>' +
+                            '<span class="vhs-label-size">' + v.size + '</span>' +
+                        '</div>';
+                    grid.appendChild(card);
+
+                    card.addEventListener('click', function() {
+                        openVideoLightbox(i);
+                    });
+                });
+
+                // GSAP batch animation for VHS cards
+                if (typeof ScrollTrigger !== 'undefined') {
+                    ScrollTrigger.batch('.vhs-card', {
+                        onEnter: function(elements) {
+                            gsap.from(elements, {
+                                opacity: 0, y: 40, scale: 0.95, stagger: 0.08, duration: 0.6, ease: 'power3.out'
+                            });
+                        },
+                        start: 'top 90%'
+                    });
+                }
+            })();
+
+            // ===== PHOTO GALLERY =====
+            (function initPhotoGallery() {
+                var PHOTOS = [
+                    '036600e2-e3f7-4901-92d6-8061363dc908.webp',
+                    '0b24f2a0-129c-49e4-9a83-53b9bd2ea23a.webp',
+                    '0c3ac6c4-2121-487e-82aa-28bdc214c4f1.webp',
+                    '15158a3d-ee30-4328-8269-77e6d931c3db.webp',
+                    '174551bc-802a-47fe-8932-33e9c14cd55f.webp',
+                    '27c4e012-48f8-4871-9349-1d8a52fdd6d5.webp',
+                    '29f2d6cf-3724-4bf1-ae21-be040a7a51f6.webp',
+                    '2e01175c-ca75-4286-8bbd-5703878ec44a.webp',
+                    '332488a5-6326-454f-8427-416b9d20344d.webp',
+                    '335bcc27-a62d-496e-bca2-5163c8c41f00.webp',
+                    '349e00d0-567c-40c6-b273-3b60de6d85c0.webp',
+                    '3b059bf4-a98d-427c-847d-6a4ed32edb60.webp',
+                    '467e980d-4df9-4e19-b06c-85aad2f873ad.webp',
+                    '4ddeb152-e6bb-4546-9a98-16071dad2271.webp',
+                    '4f85d655-9b77-4bb0-964f-6cd77463caf8.webp',
+                    '5065d86b-83fd-4dea-9c35-f0ff84d01cb4.webp',
+                    '50b52a78-3988-4fa5-b863-a421e20931fb.webp',
+                    '62630ce1-3f8c-40ff-a4b7-c6534ecbae59.webp',
+                    '63f0066a-69cb-4a15-984a-16fb33ac3b0a.webp',
+                    '678a0c30-6a68-4550-818c-2ff60c75a9b2.webp',
+                    '69857bd7-069b-4e94-8d0d-6646c946a9dc.webp',
+                    '6beea334-fd44-4e26-9f8c-1709816cd8e2.webp',
+                    '7fecf608-d69c-471b-810c-de4639b61637.webp',
+                    '85143d50-0e94-465b-9ae1-85a1ccf81296.webp',
+                    '8a88472e-e414-41ea-b5a1-ea81fe47470c.webp',
+                    '8c9c0628-72c4-46d7-b607-afc6f09cf750.webp',
+                    '8e47bf30-2719-4329-8019-10d15ddae109.webp',
+                    '90b33ad9-1520-4b73-b2c6-9932e5c95f39.webp',
+                    '94e1c3eb-62a0-4952-ae69-9cf3063f1c2f.webp',
+                    '9633c222-9bf9-4ab7-9027-028db120e384.webp',
+                    'IMG_8295.webp','IMG_8296.webp','IMG_8298.webp','IMG_8299.webp','IMG_8300.webp',
+                    'IMG_8304.webp','IMG_8305.webp','IMG_8306.webp','IMG_8307.webp','IMG_8309.webp',
+                    'IMG_8310.webp','IMG_8312.webp','IMG_8313.webp','IMG_8314.webp','IMG_8315.webp',
+                    'IMG_8318.webp','IMG_8322.webp','IMG_8323.webp','IMG_8324.webp','IMG_8327.webp',
+                    'IMG_8328.webp','IMG_8329.webp','IMG_8330.webp','IMG_8331.webp','IMG_8332.webp',
+                    'IMG_8333.webp','IMG_8334.webp','IMG_8336.webp','IMG_8337.webp','IMG_8338.webp',
+                    'IMG_8339.webp','IMG_8340.webp','IMG_8341.webp','IMG_8342.webp','IMG_8343.webp',
+                    'IMG_8344.webp','IMG_8345.webp','IMG_8346.webp','IMG_8353.webp','IMG_8355.webp',
+                    'IMG_8356.webp','IMG_8357.webp','IMG_8358.webp','IMG_8359.webp','IMG_8360.webp',
+                    'IMG_8361.webp','IMG_8362.webp','IMG_8363.webp','IMG_8366.webp','IMG_8367.webp',
+                    'IMG_8368.webp','IMG_8369.webp','IMG_8370.webp','IMG_8371.webp','IMG_8372.webp',
+                    'IMG_8373.webp','IMG_8374.webp','IMG_8375.webp','IMG_8376.webp','IMG_8377.webp',
+                    'IMG_8378.webp','IMG_8379.webp','IMG_8380.webp','IMG_8381.webp','IMG_8382.webp',
+                    'IMG_8383.webp','IMG_8384.webp','IMG_8385.webp','IMG_8386.webp','IMG_8387.webp',
+                    'IMG_8389.webp','IMG_8390.webp','IMG_8391.webp','IMG_8392.webp','IMG_8393.webp',
+                    'IMG_8394.webp','IMG_8395.webp','IMG_8396.webp','IMG_8397.webp','IMG_8400.webp',
+                    'IMG_8401.webp','IMG_8402.webp','IMG_8403.webp','IMG_8404.webp','IMG_8405.webp',
+                    'IMG_8406.webp','IMG_8408.webp','IMG_8409.webp','IMG_8410.webp',
+                    '9d8226fb-cd91-4fa5-bf22-f198af926fca.webp',
+                    '9e6353e4-2581-4f0c-b84c-90fa2025780f.webp',
+                    '9f6597e4-e0fa-4012-8ce9-98258510f047.webp',
+                    '9f84a72b-160e-4be9-a539-240704927189.webp',
+                    'a09b394b-996d-4b3a-8457-32e9aba59258.webp',
+                    'a2b1713d-3817-4cda-b579-a9e26e7352ea.webp',
+                    'a2c99ea8-809d-4b0e-95f3-b75e4dd85e03.webp',
+                    'a84a260f-bcad-4b6c-acbe-7f338adbe220.webp',
+                    'aa8889ff-181a-4074-a60b-33e68fb4d936.webp',
+                    'ac10a99e-9d3f-42e1-8b74-b7e6d7ae7a4d.webp',
+                    'af4200c4-9bea-42d8-9370-af933666f93c.webp',
+                    'bcc62e83-c325-4702-8583-f0e125a3f0fc.webp',
+                    'c9ad5e92-228c-4625-983b-85d4e5889713.webp',
+                    'cac3ca9f-e23c-4b8a-8b60-fff3183b1303.webp',
+                    'caf1b649-6f55-4e14-8f81-eda4480ee79c.webp',
+                    'd2ef0a7e-0a22-45ee-a4c7-4a81aeb98540.webp',
+                    'dc18f624-4a57-4cb7-83f3-1dac3780db6e.webp',
+                    'e7e94b73-f030-4740-9851-69077dd614b0.webp',
+                    'eb7a7788-e2b9-45c7-9b83-74cb014f2378.webp'
+                ];
+                var INITIAL_COUNT = 30;
+                var basePath = 'assets/Babak%20fotos/webp/';
+                var gallery = document.getElementById('photo-gallery');
+                if (!gallery || gallery.children.length > 0) return;
+
+                // Create lightbox
+                var lightbox = document.createElement('div');
+                lightbox.className = 'photo-lightbox';
+                lightbox.innerHTML =
+                    '<button class="lightbox-close" aria-label="Schließen">&times;</button>' +
+                    '<a class="lightbox-download" aria-label="Download" download><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>' +
+                    '<button class="lightbox-prev" aria-label="Zurück"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>' +
+                    '<button class="lightbox-next" aria-label="Weiter"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>' +
+                    '<img src="" alt="Foto">' +
+                    '<div class="lightbox-counter"></div>';
+                document.body.appendChild(lightbox);
+
+                var lbImg = lightbox.querySelector('img');
+                var lbCounter = lightbox.querySelector('.lightbox-counter');
+                var lbDownload = lightbox.querySelector('.lightbox-download');
+                var currentIndex = 0;
+
+                function openLightbox(idx) {
+                    currentIndex = idx;
+                    var src = basePath + encodeURIComponent(PHOTOS[idx]);
+                    lbImg.src = src;
+                    lbDownload.href = src;
+                    lbDownload.download = 'JGA-Foto-' + String(idx + 1).padStart(3, '0') + '.webp';
+                    lbCounter.textContent = (idx + 1) + ' / ' + PHOTOS.length;
+                    lightbox.classList.add('open');
+                    document.body.style.overflow = 'hidden';
+                }
+
+                function closeLightbox() {
+                    lightbox.classList.remove('open');
+                    document.body.style.overflow = '';
+                }
+
+                function navigateLightbox(dir) {
+                    var newIdx = currentIndex + dir;
+                    if (newIdx < 0) newIdx = PHOTOS.length - 1;
+                    if (newIdx >= PHOTOS.length) newIdx = 0;
+                    // Show hidden photos if navigating into them
+                    if (newIdx >= INITIAL_COUNT && !allPhotosLoaded) loadAllPhotos();
+                    openLightbox(newIdx);
+                }
+
+                lightbox.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+                lightbox.querySelector('.lightbox-prev').addEventListener('click', function() { navigateLightbox(-1); });
+                lightbox.querySelector('.lightbox-next').addEventListener('click', function() { navigateLightbox(1); });
+                lightbox.addEventListener('click', function(e) { if (e.target === lightbox) closeLightbox(); });
+
+                // Keyboard navigation
+                document.addEventListener('keydown', function(e) {
+                    if (!lightbox.classList.contains('open')) return;
+                    if (e.key === 'Escape') closeLightbox();
+                    if (e.key === 'ArrowLeft') navigateLightbox(-1);
+                    if (e.key === 'ArrowRight') navigateLightbox(1);
+                });
+
+                // Touch swipe support
+                var touchStartX = 0;
+                lightbox.addEventListener('touchstart', function(e) { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+                lightbox.addEventListener('touchend', function(e) {
+                    var diff = e.changedTouches[0].screenX - touchStartX;
+                    if (Math.abs(diff) > 50) {
+                        navigateLightbox(diff > 0 ? -1 : 1);
+                    }
+                }, {passive: true});
+
+                // Build masonry items
+                var allPhotosLoaded = false;
+                PHOTOS.forEach(function(photo, i) {
+                    var item = document.createElement('div');
+                    item.className = 'masonry-item' + (i >= INITIAL_COUNT ? ' hidden-photo' : '');
+                    item.innerHTML =
+                        '<img src="' + basePath + encodeURIComponent(photo) + '" alt="JGA Foto ' + (i + 1) + '" loading="lazy">' +
+                        '<a class="photo-download" href="' + basePath + encodeURIComponent(photo) + '" download="JGA-Foto-' + String(i + 1).padStart(3, '0') + '.webp" onclick="event.stopPropagation()" aria-label="Download">' +
+                            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>' +
+                        '</a>';
+                    item.addEventListener('click', function(e) {
+                        if (e.target.closest('.photo-download')) return;
+                        openLightbox(i);
+                    });
+                    gallery.appendChild(item);
+                });
+
+                // Make loadAllPhotos global so the button can call it
+                window.loadAllPhotos = function() {
+                    if (allPhotosLoaded) return;
+                    allPhotosLoaded = true;
+                    document.querySelectorAll('.hidden-photo').forEach(function(el) {
+                        el.classList.add('shown');
+                    });
+                    var btn = document.getElementById('show-all-container');
+                    if (btn) btn.style.display = 'none';
+                    if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+                };
+
+                // GSAP batch animation for visible photos
+                if (typeof ScrollTrigger !== 'undefined') {
+                    ScrollTrigger.batch('.masonry-item:not(.hidden-photo)', {
+                        onEnter: function(elements) {
+                            gsap.from(elements, {
+                                opacity: 0, scale: 0.9, stagger: 0.04, duration: 0.5, ease: 'power2.out'
+                            });
+                        },
+                        start: 'top 92%'
+                    });
+                }
+            })();
 
             // ===== MJ VINYL JUKEBOX =====
             (function initJukebox() {
