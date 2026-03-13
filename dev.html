@@ -1953,59 +1953,56 @@
                 <div class="reveal mb-20">
                     <p class="text-gold-400 text-sm tracking-[0.3em] uppercase mb-8 font-medium text-center">Babaks Lebensbilanz</p>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+                    <!-- Stat Row: 2 Karten nebeneinander -->
+                    <div class="grid grid-cols-2 gap-4 sm:gap-6">
                         <!-- Stat 1: Geschlechtskrankheiten -->
-                        <div class="text-center p-8 rounded-2xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift flex flex-col justify-center">
-                            <p class="text-5xl mb-3">🦠</p>
-                            <p class="font-display text-4xl sm:text-5xl font-bold text-gold-gradient counter-number" data-target="7">0</p>
-                            <p class="text-white/40 text-sm mt-3 leading-snug">Geschlechtskrankheiten<br><span class="text-white/20 text-xs">(bestätigt)</span></p>
+                        <div class="text-center p-4 sm:p-6 rounded-2xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift flex flex-col justify-center">
+                            <p class="text-3xl sm:text-5xl mb-2">🦠</p>
+                            <p class="font-display text-3xl sm:text-5xl font-bold text-gold-gradient counter-number" data-target="7">0</p>
+                            <p class="text-white/40 text-xs sm:text-sm mt-2 leading-snug">Geschlechtskrankheiten<br><span class="text-white/20 text-xs">(bestätigt)</span></p>
                         </div>
 
-                        <!-- Stat 2: Bahndamm-Besuche + Donut Chart -->
-                        <div class="md:col-span-2 p-8 rounded-2xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift">
-                            <div class="flex flex-col sm:flex-row items-center gap-8">
-                                <!-- Zahl -->
-                                <div class="text-center sm:text-left flex-shrink-0">
-                                    <p class="text-4xl mb-2">🚂</p>
-                                    <p class="font-display text-4xl sm:text-5xl font-bold text-gold-gradient counter-number" data-target="112">0</p>
-                                    <p class="text-white/40 text-sm mt-2">Bahndamm-Besuche</p>
-                                    <p class="text-white/20 text-xs mt-1 italic">"Ich geh nur spazieren"</p>
+                        <!-- Stat 2: Bahndamm-Besuche -->
+                        <div class="text-center p-4 sm:p-6 rounded-2xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift flex flex-col justify-center">
+                            <p class="text-3xl sm:text-5xl mb-2">🚂</p>
+                            <p class="font-display text-3xl sm:text-5xl font-bold text-gold-gradient counter-number" data-target="112">0</p>
+                            <p class="text-white/40 text-xs sm:text-sm mt-2">Bahndamm-Besuche</p>
+                            <p class="text-white/20 text-xs mt-1 italic">"Ich geh nur spazieren"</p>
+                        </div>
+                    </div>
+
+                    <!-- Donut Chart: eigene Reihe -->
+                    <div class="mt-4 sm:mt-6 p-4 sm:p-6 rounded-2xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift">
+                        <div class="flex items-center justify-center gap-6 sm:gap-8">
+                            <div class="donut-chart" id="bahndamm-chart" style="flex-shrink:0;">
+                                <div class="donut-center">
+                                    <p class="font-display text-xl sm:text-2xl font-bold text-gold-gradient counter-number" data-target="70" data-suffix="%">0</p>
+                                    <p class="text-white/30 text-[10px]">Erfolg</p>
                                 </div>
-
-                                <!-- Donut Chart -->
-                                <div class="flex flex-col items-center gap-4 flex-1">
-                                    <div class="donut-chart" id="bahndamm-chart">
-                                        <div class="donut-center">
-                                            <p class="font-display text-2xl font-bold text-gold-gradient counter-number" data-target="70" data-suffix="%">0</p>
-                                            <p class="text-white/30 text-[10px]">Erfolg</p>
-                                        </div>
-                                    </div>
-
-                                    <!-- Legende -->
-                                    <div class="flex flex-col gap-2 text-left">
-                                        <div class="flex items-center gap-2">
-                                            <span class="legend-dot" style="background:#FFD700;"></span>
-                                            <span class="text-white/50 text-xs"><span class="text-gold-300 font-semibold counter-number" data-target="79">0</span> Erfolgreich</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <span class="legend-dot" style="background:rgba(239,68,68,0.6);"></span>
-                                            <span class="text-white/50 text-xs"><span class="text-red-400/80 font-semibold counter-number" data-target="33">0</span> Ablehnung durch Prostituierte</span>
-                                        </div>
-                                    </div>
+                            </div>
+                            <div class="flex flex-col gap-2 text-left">
+                                <p class="text-white/50 text-xs sm:text-sm font-medium mb-1">Bahndamm-Erfolgsquote</p>
+                                <div class="flex items-center gap-2">
+                                    <span class="legend-dot" style="background:#FFD700;"></span>
+                                    <span class="text-white/50 text-xs"><span class="text-gold-300 font-semibold counter-number" data-target="79">0</span> Erfolgreich</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="legend-dot" style="background:rgba(239,68,68,0.6);"></span>
+                                    <span class="text-white/50 text-xs"><span class="text-red-400/80 font-semibold counter-number" data-target="33">0</span> Ablehnung</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Zweite Reihe: Jahr + Unvergesslich -->
-                    <div class="grid grid-cols-2 gap-6 mt-6">
-                        <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift">
-                            <p class="font-display text-3xl sm:text-4xl font-bold text-gold-gradient counter-number" data-target="2026">0</p>
-                            <p class="text-white/30 text-sm mt-2">Das Jahr</p>
+                    <div class="grid grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6">
+                        <div class="text-center p-4 sm:p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift">
+                            <p class="font-display text-2xl sm:text-4xl font-bold text-gold-gradient counter-number" data-target="2026">0</p>
+                            <p class="text-white/30 text-xs sm:text-sm mt-2">Das Jahr</p>
                         </div>
-                        <div class="text-center p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift">
-                            <p class="font-display text-3xl sm:text-4xl font-bold text-gold-gradient counter-number" data-target="100" data-suffix="%">0</p>
-                            <p class="text-white/30 text-sm mt-2">Unvergesslich</p>
+                        <div class="text-center p-4 sm:p-6 rounded-xl border border-gold-300/10 bg-gold-300/[0.02] hover-lift">
+                            <p class="font-display text-2xl sm:text-4xl font-bold text-gold-gradient counter-number" data-target="100" data-suffix="%">0</p>
+                            <p class="text-white/30 text-xs sm:text-sm mt-2">Unvergesslich</p>
                         </div>
                     </div>
                 </div>
