@@ -2866,12 +2866,15 @@
                 setTimeout(function() { if (window._introAudio) window._introAudio.pause(); }, 3000);
                 var videosEl = document.getElementById('videos');
                 if (videosEl) {
+                    // On desktop, content scrolls inside #crt-screen, not the viewport
+                    var crtScreen = document.getElementById('crt-screen');
+                    var observerRoot = (crtScreen && window.innerWidth >= 1024) ? crtScreen : null;
                     var audioObserver = new IntersectionObserver(function(entries) {
                         if (entries[0].isIntersecting && window._introAudio.paused && !window._jukeboxActive) {
                             window._introAudio.play().catch(function() {});
                             audioObserver.disconnect();
                         }
-                    }, { threshold: 0.05 });
+                    }, { threshold: 0.05, root: observerRoot });
                     audioObserver.observe(videosEl);
                 }
             } catch(e) {}
