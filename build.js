@@ -88,6 +88,19 @@ ${headContent}
 </head>
 <body class="bg-black text-white" style="font-family:'Inter',system-ui,sans-serif;">
 
+    <!-- Global Mute Button -->
+    <button id="global-mute" onclick="window._globalMuted=!window._globalMuted;this.innerHTML=window._globalMuted?'🔇':'🔊';document.querySelectorAll('audio,video').forEach(function(m){m.muted=window._globalMuted});if(window._lockBgm)window._lockBgm.muted=window._globalMuted;" style="position:fixed;top:12px;right:12px;z-index:99999;background:rgba(0,0,0,0.6);border:1px solid rgba(255,215,0,0.3);border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:opacity 0.3s;">🔊</button>
+    <script>
+    window._globalMuted = false;
+    var _OrigAudio = window.Audio;
+    window.Audio = function(src) {
+        var a = new _OrigAudio(src);
+        if (window._globalMuted) a.muted = true;
+        return a;
+    };
+    window.Audio.prototype = _OrigAudio.prototype;
+    </script>
+
     <!-- CRT Monitor Wrapper (Desktop only) -->
     <div id="crt-monitor">
     <div id="crt-screen">
