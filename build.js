@@ -97,6 +97,9 @@ ${headContent}
         document.querySelectorAll('audio,video').forEach(function(m) { m.muted = muted; });
         if (window._lockBgm) window._lockBgm.muted = muted;
         if (window._introAudio) window._introAudio.muted = muted;
+        if (window._ytPlayer) {
+            try { muted ? window._ytPlayer.mute() : window._ytPlayer.unMute(); } catch(e) {}
+        }
     }
     document.getElementById('global-mute').addEventListener('click', function() {
         window._globalMuted = !window._globalMuted;

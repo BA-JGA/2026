@@ -1686,6 +1686,9 @@
         document.querySelectorAll('audio,video').forEach(function(m) { m.muted = muted; });
         if (window._lockBgm) window._lockBgm.muted = muted;
         if (window._introAudio) window._introAudio.muted = muted;
+        if (window._ytPlayer) {
+            try { muted ? window._ytPlayer.mute() : window._ytPlayer.unMute(); } catch(e) {}
+        }
     }
     document.getElementById('global-mute').addEventListener('click', function() {
         window._globalMuted = !window._globalMuted;
@@ -3716,6 +3719,7 @@
             // ===== MJ VINYL JUKEBOX =====
             (function initJukebox() {
                 var ytPlayer = null;
+                window._ytPlayer = null; // expose for global mute
                 var playerReady = false;
                 var currentDisc = null;
                 var isPlaying = false;
@@ -3755,7 +3759,9 @@
                         events: {
                             onReady: function() {
                                 playerReady = true;
+                                window._ytPlayer = ytPlayer;
                                 ytPlayer.setVolume(volume);
+                                if (window._globalMuted && ytPlayer.mute) ytPlayer.mute();
                                 if (pendingVideoId) {
                                     ytPlayer.loadVideoById(pendingVideoId);
                                     pendingVideoId = null;
