@@ -2698,21 +2698,32 @@
     var REDIRECT_URL = 'https://www.youtube.com/watch?v=0RDAJ9V-cv8';
 
     function redirectAway() {
-        var lockScreen = document.getElementById('lock-screen');
         var step2 = document.getElementById('step-2');
-        // Hide step 2 content
         step2.style.transition = 'opacity 0.4s ease';
         step2.style.opacity = '0';
         setTimeout(function() {
             step2.innerHTML = '';
             step2.style.opacity = '1';
             step2.style.display = 'flex';
+            step2.style.flexDirection = 'column';
             step2.style.alignItems = 'center';
             step2.style.justifyContent = 'center';
             step2.style.minHeight = '100vh';
+            step2.style.height = '100%';
             step2.style.padding = '0';
             step2.style.background = '#000';
-            // Create fullscreen video
+            step2.style.overflow = 'hidden';
+            step2.style.position = 'relative';
+            // Marquee ticker
+            var ticker = document.createElement('div');
+            ticker.style.cssText = 'position:absolute;top:0;left:0;right:0;background:linear-gradient(90deg,#b8860b,#ffd700,#b8860b);color:#000;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;z-index:10;padding:4px 0;';
+            var tickerInner = document.createElement('div');
+            var txt = '♥ Ich liebe meine Frau ♥ Mein Name ist Babak und ich liebe meine Frau über alles ♥ Alles ist gut, alles ist super ♥ من عاشق همسرم هستم ♥ ';
+            tickerInner.textContent = txt + txt + txt + txt;
+            tickerInner.style.cssText = 'display:inline-block;animation:marquee-scroll 20s linear infinite;';
+            ticker.appendChild(tickerInner);
+            step2.appendChild(ticker);
+            // Video
             var video = document.createElement('video');
             video.src = 'assets/Videos/Ich%20liebe%20meine%20Frau%20-%2080s%20Wife%20(720p%2C%20h264).mp4';
             video.autoplay = true;
@@ -2721,7 +2732,7 @@
             video.controlsList = 'nodownload';
             video.disablePictureInPicture = true;
             video.oncontextmenu = function() { return false; };
-            video.style.cssText = 'width:100%;height:100%;max-height:100vh;object-fit:contain;background:#000;';
+            video.style.cssText = 'width:100%;height:100%;flex:1;object-fit:contain;background:#000;';
             step2.appendChild(video);
             // On mobile, try native fullscreen
             if (window.innerWidth < 1024 && video.requestFullscreen) {
@@ -2729,7 +2740,6 @@
             } else if (window.innerWidth < 1024 && video.webkitEnterFullscreen) {
                 video.webkitEnterFullscreen();
             }
-            // When video ends, redirect to YouTube as fallback
             video.addEventListener('ended', function() {
                 step2.innerHTML = '<p class="text-white/60 text-center text-lg p-8">Tschüss! 👋</p>';
             });
