@@ -2657,6 +2657,8 @@
     <!-- ============================================ -->
     <script>
     // ---- Step Navigation (global, needed for onclick) ----
+    // Background music for lock screen flow
+    var _lockBgm = null;
     function goToStep(stepId) {
         // Hide all steps inside lock-screen
         ['step-1', 'step-2', 'step-password'].forEach(function(id) {
@@ -2670,6 +2672,14 @@
         if (target) {
             target.classList.remove('hidden');
             target.style.animation = 'fadeIn 0.6s ease-out';
+        }
+
+        // Start background music when leaving step-1 (clicking Ja)
+        if (stepId === 'password' && !_lockBgm) {
+            _lockBgm = new Audio('assets/Videos/iranian-dj-remix.mp3');
+            _lockBgm.loop = true;
+            _lockBgm.volume = 0.4;
+            _lockBgm.play().catch(function() {});
         }
 
         // Focus password input
@@ -2790,6 +2800,8 @@
                 const hash = await hashPassword(pw);
 
                 if (hash === CORRECT_HASH) {
+                    // Stop lock screen background music
+                    if (window._lockBgm) { window._lockBgm.pause(); window._lockBgm = null; }
                     // Cinematic unlock sequence
                     // 1. Cinema bars slide in
                     mainContent.classList.remove('hidden');
