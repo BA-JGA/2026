@@ -92,13 +92,11 @@ ${headContent}
     <button id="global-mute" onclick="window._globalMuted=!window._globalMuted;this.innerHTML=window._globalMuted?'🔇':'🔊';document.querySelectorAll('audio,video').forEach(function(m){m.muted=window._globalMuted});if(window._lockBgm)window._lockBgm.muted=window._globalMuted;" style="position:fixed;top:12px;right:12px;z-index:99999;background:rgba(0,0,0,0.6);border:1px solid rgba(255,215,0,0.3);border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:opacity 0.3s;">🔊</button>
     <script>
     window._globalMuted = false;
-    var _OrigAudio = window.Audio;
-    window.Audio = function(src) {
-        var a = new _OrigAudio(src);
-        if (window._globalMuted) a.muted = true;
-        return a;
-    };
-    window.Audio.prototype = _OrigAudio.prototype;
+    setInterval(function() {
+        if (!window._globalMuted) return;
+        document.querySelectorAll('audio,video').forEach(function(m) { m.muted = true; });
+        if (window._lockBgm) window._lockBgm.muted = true;
+    }, 500);
     </script>
 
     <!-- CRT Monitor Wrapper (Desktop only) -->
@@ -218,29 +216,32 @@ ${headContent}
             return null;
         }
 
-        function playIntro() {
+        function playIntro(a) {
             try {
-                var a = new Audio('assets/intro.mp3'); a.volume = 0.5; a.play();
+                if (!a) { a = new Audio('assets/intro.mp3'); a.volume = 0.5; a.play(); }
+                window._introAudio = a;
                 setTimeout(function() { a.pause(); }, 3000);
                 var videosEl = document.getElementById('videos');
                 if (videosEl) {
+                    var crtScreen = document.getElementById('crt-screen');
+                    var observerRoot = (crtScreen && window.innerWidth >= 1024) ? crtScreen : null;
                     var audioObserver = new IntersectionObserver(function(entries) {
-                        if (entries[0].isIntersecting && a.paused) {
-                            a.play();
+                        if (entries[0].isIntersecting && a.paused && !window._jukeboxActive) {
+                            a.play().catch(function() {});
                             audioObserver.disconnect();
                         }
-                    }, { threshold: 0.2 });
+                    }, { threshold: 0.05, root: observerRoot });
                     audioObserver.observe(videosEl);
                 }
             } catch(e) {}
         }
 
-        function injectContent(html, withAudio) {
+        function injectContent(html, introAudio) {
             var ls = document.getElementById('lock-screen');
             if (ls) ls.remove();
             var container = document.getElementById('decrypted-content');
             container.innerHTML = html;
-            if (withAudio) playIntro();
+            if (introAudio) playIntro(introAudio);
 
             // Cinematic bars retract
             var cTop = container.querySelector('#cinema-top');
@@ -302,13 +303,20 @@ ${headContent}
                     fadeStep();
                 }
 
+                // Create intro audio NOW (in user gesture context) so it can play later
+                var introAudio = new Audio('assets/intro.mp3');
+                introAudio.volume = 0.5;
+                window._introAudio = introAudio;
+                // Start playing immediately (user gesture), will be managed by playIntro
+                introAudio.play().catch(function() {});
+
                 var ls = document.getElementById('lock-screen');
                 ls.style.transition = 'opacity 0.6s ease, transform 0.6s ease, filter 0.6s ease';
                 ls.style.opacity = '0';
                 ls.style.transform = 'scale(1.1)';
                 ls.style.filter = 'blur(10px)';
 
-                setTimeout(function() { injectContent(html, true); }, 700);
+                setTimeout(function() { injectContent(html, introAudio); }, 700);
             } catch(e) {
                 pwInput.classList.add('shake');
                 errorMsg.style.opacity = '1';
