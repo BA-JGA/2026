@@ -1637,7 +1637,7 @@
             }
             #crt-screen #step-2 p:first-child { font-size: 0.7rem; margin-bottom: 0.3rem; }
             #crt-screen #step-2 h2 { font-size: 1.1rem; margin-bottom: 0.5rem; }
-            #crt-screen #step-2 .max-w-lg { max-width: 280px; margin-bottom: 0.5rem; }
+            #crt-screen #step-2 .max-w-lg { max-width: 380px; margin-bottom: 0.5rem; }
             #crt-screen #step-2 .flex.gap-4 { gap: 0.5rem; }
             #crt-screen #step-2 .flex.gap-4 button { padding: 0.4rem 1.2rem; font-size: 0.7rem; }
 
@@ -1748,6 +1748,9 @@
                     Nein, ich bin jemand anderes
                 </button>
             </div>
+            <button onclick="goToStep('step-1')" class="mt-6 text-white/30 hover:text-white/60 transition-colors text-xs tracking-wider uppercase" style="animation: fadeInUp 0.8s ease-out 0.9s both">
+                ← Zurück
+            </button>
         </div>
 
         <!-- ===== STEP 3: Password Entry ===== -->
@@ -1808,6 +1811,9 @@
             <p class="text-white/10 text-xs mt-12">
                 ♪ Just Beat It... oder gib das richtige Passwort ein ♪
             </p>
+            <button onclick="goToStep('step-1')" class="mt-4 text-white/30 hover:text-white/60 transition-colors text-xs tracking-wider uppercase">
+                ← Zurück
+            </button>
         </div>
     </div>
 
