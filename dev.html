@@ -1649,8 +1649,10 @@
                 gap: 0;
             }
             #crt-screen #step-password svg:first-child { width: 40px; height: 25px; margin-bottom: 0.3rem; }
-            #crt-screen #step-password h1 { font-size: 1.2rem; margin-bottom: 0.2rem; }
-            #crt-screen #step-password h1 + p { font-size: 0.7rem; margin-bottom: 0.3rem; }
+            #crt-screen #step-password h1 { font-size: 1.3rem; margin-bottom: 0.2rem; }
+            #crt-screen #step-password h1 + p { font-size: 0.8rem; margin-bottom: 0.3rem; }
+            #crt-screen #step-password p.text-white\/20 { font-size: 0.75rem; }
+            #crt-screen #step-password p.text-white\/10 { font-size: 0.7rem; }
 
             /* CRT overrides for gallery & videos */
             .masonry-gallery { columns: 2 !important; column-gap: 6px; }
@@ -2800,8 +2802,20 @@
                 const hash = await hashPassword(pw);
 
                 if (hash === CORRECT_HASH) {
-                    // Stop lock screen background music
-                    if (window._lockBgm) { window._lockBgm.pause(); window._lockBgm = null; }
+                    // Fade out lock screen background music
+                    if (window._lockBgm) {
+                        var bgm = window._lockBgm;
+                        window._lockBgm = null;
+                        var fadeStep = function() {
+                            if (bgm.volume > 0.05) {
+                                bgm.volume = Math.max(0, bgm.volume - 0.02);
+                                setTimeout(fadeStep, 80);
+                            } else {
+                                bgm.pause();
+                            }
+                        };
+                        fadeStep();
+                    }
                     // Cinematic unlock sequence
                     // 1. Cinema bars slide in
                     mainContent.classList.remove('hidden');
