@@ -89,7 +89,7 @@ ${headContent}
 <body class="bg-black text-white" style="font-family:'Inter',system-ui,sans-serif;">
 
     <!-- Global Mute Button -->
-    <button id="global-mute" style="position:fixed;top:12px;left:12px;z-index:99999;background:rgba(0,0,0,0.6);border:1px solid rgba(255,215,0,0.3);border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:opacity 0.3s;">🔊</button>
+    <button id="global-mute" style="position:fixed;top:60px;left:12px;z-index:99999;background:rgba(0,0,0,0.4);border:1px solid rgba(255,215,0,0.2);border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:opacity 0.3s;">🔊</button>
     <script>
     window._globalMuted = false;
     function applyMuteState() {
