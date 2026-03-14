@@ -299,12 +299,15 @@ ${headContent}
                 if (window._lockBgm) {
                     var bgm = window._lockBgm;
                     window._lockBgm = null;
+                    var startVol = bgm.volume;
                     var fadeStep = function() {
-                        if (bgm.volume > 0.05) {
-                            bgm.volume = Math.max(0, bgm.volume - 0.02);
+                        try { bgm.volume = Math.max(0, bgm.volume - 0.02); } catch(e) {}
+                        if (bgm.volume > 0.05 && bgm.volume < startVol) {
+                            startVol = bgm.volume;
                             setTimeout(fadeStep, 80);
                         } else {
                             bgm.pause();
+                            try { bgm.currentTime = 0; } catch(e) {}
                         }
                     };
                     fadeStep();
