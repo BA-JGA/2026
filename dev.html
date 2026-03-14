@@ -2683,7 +2683,7 @@
     <script>
     // ---- Step Navigation (global, needed for onclick) ----
     // Background music for lock screen flow
-    var _lockBgm = null;
+    window._lockBgm = null;
     function goToStep(stepId) {
         // Hide all steps inside lock-screen
         ['step-1', 'step-2', 'step-password'].forEach(function(id) {
@@ -2700,11 +2700,11 @@
         }
 
         // Start background music when leaving step-1 (clicking Ja)
-        if (stepId === 'password' && !_lockBgm) {
-            _lockBgm = new Audio('assets/Videos/iranian-dj-remix.mp3');
-            _lockBgm.loop = true;
-            _lockBgm.volume = 0.4;
-            _lockBgm.play().catch(function() {});
+        if (stepId === 'password' && !window._lockBgm) {
+            window._lockBgm = new Audio('assets/Videos/iranian-dj-remix.mp3');
+            window._lockBgm.loop = true;
+            window._lockBgm.volume = 0.4;
+            window._lockBgm.play().catch(function() {});
         }
 
         // Focus password input
