@@ -2732,8 +2732,20 @@
             } else if (window.innerWidth < 1024 && video.webkitEnterFullscreen) {
                 video.webkitEnterFullscreen();
             }
+            // Close button
+            var closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '&times;';
+            closeBtn.style.cssText = 'position:absolute;top:8px;right:12px;z-index:20;background:rgba(0,0,0,0.6);color:#fff;border:1px solid rgba(255,215,0,0.3);border-radius:50%;width:36px;height:36px;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;';
+            closeBtn.addEventListener('click', function() {
+                video.pause();
+                if (document.fullscreenElement) document.exitFullscreen().catch(function(){});
+                location.reload();
+            });
+            lockScreen.appendChild(closeBtn);
             video.addEventListener('ended', function() {
-                lockScreen.innerHTML = '<p style="color:rgba(255,255,255,0.6);text-align:center;font-size:1.2rem;padding:2rem;margin:auto;">Tschüss! 👋</p>';
+                if (document.fullscreenElement) document.exitFullscreen().catch(function(){});
+                lockScreen.innerHTML = '<p style="color:rgba(255,255,255,0.6);text-align:center;font-size:1.2rem;padding:2rem;margin:auto;">Tschüss! 👋</p>' +
+                    '<button onclick="location.reload()" style="display:block;margin:0 auto;padding:0.8rem 2rem;background:linear-gradient(135deg,#b8860b,#ffd700);color:#000;border:none;border-radius:12px;font-weight:700;font-size:0.9rem;cursor:pointer;">Zurück zur Startseite</button>';
             });
         }, 400);
     }
