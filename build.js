@@ -274,6 +274,21 @@ ${headContent}
                 var html = await decrypt(pw);
                 savePw(pw);
 
+                // Fade out lock screen background music
+                if (window._lockBgm) {
+                    var bgm = window._lockBgm;
+                    window._lockBgm = null;
+                    var fadeStep = function() {
+                        if (bgm.volume > 0.05) {
+                            bgm.volume = Math.max(0, bgm.volume - 0.02);
+                            setTimeout(fadeStep, 80);
+                        } else {
+                            bgm.pause();
+                        }
+                    };
+                    fadeStep();
+                }
+
                 var ls = document.getElementById('lock-screen');
                 ls.style.transition = 'opacity 0.6s ease, transform 0.6s ease, filter 0.6s ease';
                 ls.style.opacity = '0';
